@@ -1,5 +1,6 @@
 import java.util.Scanner;
 import java.util.Date;
+import java.security.MessageDigest;
 
 public class Main{
     public static void main(String[] args) {

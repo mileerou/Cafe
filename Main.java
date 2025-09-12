@@ -3,7 +3,8 @@ import java.util.Date;
 import java.util.UUID;
 import java.time.LocalDate;
 import java.util.ArrayList;
-public class Main{
+
+public class Main {
     public static void main(String[] args) {
         Scanner sc = new Scanner (System.in);
         UsuarioController usuarioController = new UsuarioController();
@@ -11,14 +12,14 @@ public class Main{
 
         System.out.println("==============================================");
         System.out.println("   ¡Bienvenido a Movaccino, la app que te ayuda");
-        System.out.println("         a reducir tu consumo de café!");
+        System.out.println("      a reducir tu consumo de café!");
         System.out.println("==============================================");
         System.out.println("           ( (");
         System.out.println("            ) )");
-        System.out.println("         ........");
-        System.out.println("         |      |]");
-        System.out.println("         \\      /");
-        System.out.println("          `----'");
+        System.out.println("           ........");
+        System.out.println("           |      |]");
+        System.out.println("           \\      /");
+        System.out.println("            `----'");
         System.out.println("==============================================\n");
         int opcion;
 
@@ -41,7 +42,6 @@ public class Main{
                         String id = uuid.toString();
                         System.out.print("Nombre: ");
                         String nombre = sc.nextLine();
-                        System.out.print("Correo: ");
                         String correo;
                         do {
                             System.out.print("Correo: ");
@@ -64,12 +64,11 @@ public class Main{
                     } catch (Exception e){
                         System.out.println("Error al registrar usuario: " + e.getMessage());
                     }
-                    
+
                     break;
                 case 2:
                     try{
                         System.out.println("Iniciar sesión");
-                        System.out.print("Correo: ");
                         String correoLogin;
                         do {
                             System.out.print("Correo: ");
@@ -82,11 +81,15 @@ public class Main{
                         String contrasenaLogin = sc.nextLine();
                         String contraseñaLoginHash = HashUtil.hashPassword(contrasenaLogin);
                         usuarioActual = usuarioController.login(correoLogin, contraseñaLoginHash);
-                        if(usuarioActual.isPrimerLogin()) {
-                            usuarioActual.setPrimerLogin(false); 
+                        if(usuarioActual != null){
+                            if(usuarioActual.isPrimerLogin()) {
+                                usuarioActual.setPrimerLogin(false);
+                            }
+                            System.out.println("¡Inicio de sesión exitoso! Bienvenido, " + usuarioActual.getNombre() + ".\n");
+                            mostrarMenuUsuario(sc, usuarioActual);
+                        } else {
+                            System.out.println("Credenciales incorrectas.");
                         }
-                        System.out.println("¡Inicio de sesión exitoso! Bienvenido, " + usuarioActual.getNombre() + ".\n");
-                        mostrarMenuUsuario(sc, usuarioActual);
                     }catch (Exception e){
                         System.out.println("Error al iniciar sesión: " + e.getMessage());
                     }
@@ -100,18 +103,21 @@ public class Main{
         }while(opcion != 3);
     }
 
-    public static void mostrarMenuUsuario(Scanner sc, Usuario usuarioActual){
+    public static void mostrarMenuUsuario(Scanner sc, Usuario usuarioActual) {
         int opcion;
-        do{
-          System.out.println("   ^    ^  ");
-          System.out.println("  ( ; . ; ) つ ☕ ");
-          System.out.println("  (      ⎠");
-          System.out.println("  (        )   ");
-          System.out.println(" (   ) (   )  ");
-          System.out.println("  ^^    ^^     ");
+        PreferenciasUsuarioController preferenciasController = new PreferenciasUsuarioController();
+        do {
+            System.out.println("   ^    ^  ");
+            System.out.println("  ( ; . ; ) つ ☕ ");
+            System.out.println("  (     ⎠");
+            System.out.println("  (      )  ");
+            System.out.println(" (   ) (   )  ");
+            System.out.println("  ^^    ^^   ");
             System.out.println("1. Registrar consumo diario de café");
             System.out.println("2. Ver historial de consumo");
-            System.out.println("3. Cerrar sesión");
+            System.out.println("3. Configurar preferencias");
+            System.out.println("4. Ver mis preferencias");
+            System.out.println("5. Cerrar sesión");
             System.out.print("Elige una opción: ");
             String input = sc.nextLine();
             try {
@@ -120,7 +126,7 @@ public class Main{
                 System.out.println("Por favor, ingresa un número válido.");
                 opcion = 0;
             }
-            switch(opcion){
+            switch (opcion) {
                 case 1:
                     try {
                         Date fecha = new Date();
@@ -136,7 +142,6 @@ public class Main{
                         String respuestasExtras = sc.nextLine();
 
                         ConsumoController consumoController = new ConsumoController(usuarioActual);
-
                         consumoController.guardarConsumoDiario(fecha, tamanoTaza, tipoAzucar, tipoLeche, tipoCafe, respuestasExtras);
 
                         System.out.println("¡Consumo registrado exitosamente!\n");
@@ -155,23 +160,71 @@ public class Main{
                             System.out.println("╔══════════════════════════════════╗");
                             System.out.println("║   ☕  Registro de Consumo        ║");
                             System.out.println("╠══════════════════════════════════╣");
-                            System.out.printf ("║ Fecha: %-24s ║\n", consumo.getFecha());
-                            System.out.printf ("║ Tamaño de taza: %-16s ║\n", consumo.getTamañoTaza());
-                            System.out.printf ("║ Tipo de azúcar: %-16s ║\n", consumo.getTipoAzucar());
-                            System.out.printf ("║ Tipo de leche: %-16s ║\n", consumo.getTipoLeche());
-                            System.out.printf ("║ Tipo de café: %-17s ║\n", consumo.getTipoCafe());
-                            System.out.printf ("║ Extra: %-24s ║\n", consumo.getRespuestasExtras());
+                            System.out.printf("║ Fecha: %-24s ║\n", consumo.getFecha());
+                            System.out.printf("║ Tamaño de taza: %-16s ║\n", consumo.getTamañoTaza());
+                            System.out.printf("║ Tipo de azúcar: %-16s ║\n", consumo.getTipoAzucar());
+                            System.out.printf("║ Tipo de leche: %-16s ║\n", consumo.getTipoLeche());
+                            System.out.printf("║ Tipo de café: %-17s ║\n", consumo.getTipoCafe());
+                            System.out.printf("║ Extra: %-24s ║\n", consumo.getRespuestasExtras());
                             System.out.println("╚══════════════════════════════════╝\n");
                         }
                     }
                     break;
                 case 3:
+                    // Formulario de preferencias
+                    System.out.println("\n===== CONFIGURAR PREFERENCIAS =====");
+                    System.out.print("Tipo de café preferido: ");
+                    String tipoCafe = sc.nextLine();
+                    System.out.print("Tamaño de taza (Oz): ");
+                    String tamanoTaza = sc.nextLine();
+                    System.out.print("¿Usas azúcar? (si/no): ");
+                    boolean usaAzucar = sc.nextLine().equalsIgnoreCase("si");
+                    String tipoAzucar = "";
+                    if (usaAzucar) {
+                        System.out.print("Tipo de azúcar: ");
+                        tipoAzucar = sc.nextLine();
+                    }
+                    System.out.print("¿Usas leche? (si/no): ");
+                    boolean usaLeche = sc.nextLine().equalsIgnoreCase("si");
+                    String tipoLeche = "";
+                    if (usaLeche) {
+                        System.out.print("Tipo de leche: ");
+                        tipoLeche = sc.nextLine();
+                    }
+                    ArrayList<String> retosList = new ArrayList<>();
+                    System.out.print("Retos preferidos (separados por comas, ej: 'caminar, correr'): ");
+                    String[] retosArray = sc.nextLine().split(",");
+                    for (String reto : retosArray) {
+                        retosList.add(reto.trim());
+                    }
+                    PreferenciasUsuario preferencias = new PreferenciasUsuario(tipoCafe, tamanoTaza, usaAzucar, tipoAzucar, usaLeche, tipoLeche, retosList.toArray(new String[0]));
+                    preferenciasController.crearPreferencias(preferencias);
+                    break;
+                case 4:
+                    // Ver preferencias
+                    System.out.println("\n===== TUS PREFERENCIAS =====");
+                    PreferenciasUsuario pref = preferenciasController.obtenerPreferencias();
+                    if (pref != null) {
+                        System.out.println("Tipo de café: " + pref.getTipoCafe());
+                        System.out.println("Tamaño de taza: " + pref.getTamañoTaza());
+                        System.out.println("Usa azúcar: " + (pref.isUsaAzucar() ? "Sí" : "No"));
+                        if (pref.isUsaAzucar()) {
+                            System.out.println("Tipo de azúcar: " + pref.getTipoAzucar());
+                        }
+                        System.out.println("Usa leche: " + (pref.isUsaLeche() ? "Sí" : "No"));
+                        if (pref.isUsaLeche()) {
+                            System.out.println("Tipo de leche: " + pref.getTipoLeche());
+                        }
+                        System.out.println("Retos preferidos: " + java.util.Arrays.toString(pref.getRetosPreferidos()));
+                    }
+                    break;
+                case 5:
                     System.out.println("Cerrando sesión...\n");
                     usuarioActual = null;
                     break;
                 default:
                     System.out.println("Opción inválida. Intente de nuevo.\n");
             }
-        }while(opcion != 3);
+        } while (opcion != 5);
     }
 }

@@ -1,6 +1,6 @@
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-//
+
 public class HashUtil {
     public static String hashPassword(String password){
         try{

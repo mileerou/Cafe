@@ -10,37 +10,11 @@ public class ConsumoController {
         this.usuario = usuario;
     }
 
-    public void guardarConsumoDiario(){
-        Scanner sc = new Scanner(System.in);
-        String tamanoTaza = "";
-        String tipoAzucar = "N/A";
-        String tipoLeche = "N/A";
-        String tipoCafe = "";
-        String respuestasExtras = "N/A";
-
+    public void guardarConsumoDiario(Date fecha, String tamanoTaza, String tipoAzucar, String tipoLeche, String tipoCafe, String respuestasExtras) {
         try {
-            tamanoTaza = sc.nextLine();
-
-            String usaAzucar = sc.nextLine().toLowerCase();
-            if (usaAzucar.equals("si")) {
-                tipoAzucar = sc.nextLine();
-            }
-
-            String usaLeche = sc.nextLine().toLowerCase();
-            if (usaLeche.equals("si")) {
-                tipoLeche = sc.nextLine();
-            }
-
-            tipoCafe = sc.nextLine();
-
-            String respuestaExtra = sc.nextLine().toLowerCase();
-            if (respuestaExtra.equals("si")) {
-                respuestasExtras = sc.nextLine();
-            }
-
-            Consumo nuevoConsumo = new Consumo(new java.util.Date(), tamanoTaza, tipoAzucar, tipoLeche, tipoCafe, respuestasExtras);
+            Consumo nuevoConsumo = new Consumo(fecha, tamanoTaza, tipoAzucar, tipoLeche, tipoCafe, respuestasExtras);
             consumos.add(nuevoConsumo);
-
+            usuario.agregarConsumo(nuevoConsumo); 
         } catch (Exception e) {
             throw new RuntimeException("Error al guardar el consumo diario: " + e.getMessage());
         }

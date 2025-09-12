@@ -67,12 +67,54 @@ public class Main{
                         String contraseñaLoginHash = HashUtil.hashPassword(contrasenaLogin);
                         usuarioActual = usuarioController.login(correoLogin, contraseñaLoginHash);
                         System.out.println("¡Inicio de sesión exitoso! Bienvenido, " + usuarioActual.getNombre() + ".\n");
+                        mostrarMenuUsuario(sc, usuarioActual);
                     }catch (Exception e){
                         System.out.println("Error al iniciar sesión: " + e.getMessage());
                     }
                     break;
                 case 3:
                     System.out.println("Gracias por usar Movaccino. ¡Hasta luego!");
+                    break;
+                default:
+                    System.out.println("Opción inválida. Intente de nuevo.\n");
+            }
+        }while(opcion != 3);
+    }
+
+    public static void mostrarMenuUsuario(Scanner sc, Usuario usuarioActual){
+        int opcion;
+        do{
+          System.out.println("   ^    ^  ");
+          System.out.println("  ( ; . ; ) つ ☕ ");
+          System.out.println("  (      ⎠");
+          System.out.println("  (        )   ");
+          System.out.println(" (   ) (   )  ");
+          System.out.println("  ^^    ^^     ");
+            System.out.println("1. Registrar consumo diario de café");
+            System.out.println("2. Ver historial de consumo");
+            System.out.println("3. Cerrar sesión");
+            System.out.print("Elige una opción: ");
+            String input = sc.nextLine();
+            try {
+                opcion = Integer.parseInt(input);
+            } catch (NumberFormatException e) {
+                System.out.println("Por favor, ingresa un número válido.");
+                opcion = 0;
+            }
+            switch(opcion){
+                case 1:
+                    try{
+                       
+                    } catch (Exception e){
+                        System.out.println("Error al registrar consumo: " + e.getMessage());
+                    }
+                    break;
+                case 2:
+                    
+                    break;
+                case 3:
+                    System.out.println("Cerrando sesión...\n");
+                    usuarioActual = null;
                     break;
                 default:
                     System.out.println("Opción inválida. Intente de nuevo.\n");

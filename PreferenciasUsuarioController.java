@@ -1,94 +1,32 @@
-import java.io.Serializable; //permitirá guardar el estado del objeto en otro
-import java.util.ArrayList;
+import java.io.*;
 
-public class PreferenciasUsuarioController{
-    
-    private String tipoCafe;
-    private String tamanoTaza;
-    private boolean usaAzucar;
-    private String tipoAzucar;
-    private boolean usaLeche;
-    private String tipoLeche;
-    private ArrayList<String> retosPreferidos;
+public class PreferenciasUsuarioController {
 
-    public PreferenciasUsuario(String tipoCafe, String tamanoTaza, boolean usaAzucar,
-                            String tipoAzucar, boolean usaLeche, String tipoLeche,
-                            ArrayList<String> retosPreferidos) {
-        this.tipoCafe = tipoCafe;
-        this.tamanoTaza = tamanoTaza;
-        this.usaAzucar = usaAzucar;
-        this.tipoAzucar = tipoAzucar;
-        this.usaLeche = usaLeche;
-        this.tipoLeche = tipoLeche;
-        this.retosPreferidos = retosPreferidos;
+    private final String RUTA_PREFERENCIAS = "preferencias.dat";
+
+    public void crearPreferencias(PreferenciasUsuario preferencias) {
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(RUTA_PREFERENCIAS))) {
+            oos.writeObject(preferencias);
+            System.out.println("Preferencias guardadas exitosamente.");
+        } catch (IOException e) {
+            System.err.println("Error al guardar las preferencias: " + e.getMessage());
+        }
     }
 
-        public String getTipoCafe() {
-        return tipoCafe;
+    public PreferenciasUsuario obtenerPreferencias() {
+        PreferenciasUsuario preferencias = null;
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(RUTA_PREFERENCIAS))) {
+            preferencias = (PreferenciasUsuario) ois.readObject();
+        } catch (FileNotFoundException e) {
+            System.err.println("Archivo de preferencias no encontrado.");
+        } catch (IOException | ClassNotFoundException e) {
+            System.err.println("Error al cargar las preferencias: " + e.getMessage());
+        }
+        return preferencias;
     }
 
-    public void setTipoCafe(String tipoCafe) {
-        this.tipoCafe = tipoCafe;
-    }
-
-    public String getTamanoTaza() {
-        return tamanoTaza;
-    }
-
-    public void setTamanoTaza(String tamanoTaza) {
-        this.tamanoTaza = tamanoTaza;
-    }
-
-    public boolean isUsaAzucar() {
-        return usaAzucar;
-    }
-
-    public void setUsaAzucar(boolean usaAzucar) {
-        this.usaAzucar = usaAzucar;
-    }
-
-    public String getTipoAzucar() {
-        return tipoAzucar;
-    }
-
-    public void setTipoAzucar(String tipoAzucar) {
-        this.tipoAzucar = tipoAzucar;
-    }
-
-    public boolean isUsaLeche() {
-        return usaLeche;
-    }
-
-    public void setUsaLeche(boolean usaLeche) {
-        this.usaLeche = usaLeche;
-    }
-
-    public String getTipoLeche() {
-        return tipoLeche;
-    }
-
-    public void setTipoLeche(String tipoLeche) {
-        this.tipoLeche = tipoLeche;
-    }
-
-    public ArrayList<String> getRetosPreferidos() {
-        return retosPreferidos;
-    }
-
-    public void setRetosPreferidos(ArrayList<String> retosPreferidos) {
-        this.retosPreferidos = retosPreferidos;
-    }
-
-    @Override
-    public String toString() {
-        return "PreferenciasUsuario{" +
-                "tipoCafe='" + tipoCafe + '\'' +
-                ", tamanoTaza='" + tamanoTaza + '\'' +
-                ", usaAzucar=" + usaAzucar +
-                ", tipoAzucar='" + tipoAzucar + '\'' +
-                ", usaLeche=" + usaLeche +
-                ", tipoLeche='" + tipoLeche + '\'' +
-                ", retosPreferidos=" + retosPreferidos +
-                '}';
+    //actualizador de arcivos
+    public void actualizarPreferencias(PreferenciasUsuario preferencias) {
+        crearPreferencias(preferencias); // Simplemente sobrescribe el archivo existente
     }
 }

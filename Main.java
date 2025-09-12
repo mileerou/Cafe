@@ -6,5 +6,17 @@ public class Main{
         Scanner sc = new Scanner (System.in);
         UsuarioController usuarioController = new UsuarioController();
         Usuario usuarioActual = null;
+
+        System.out.println("==============================================");
+        System.out.println("   ¡Bienvenido a Movaccino, la app que te ayuda");
+        System.out.println("         a reducir tu consumo de café!");
+        System.out.println("==============================================");
+        System.out.println("           ( (");
+        System.out.println("            ) )");
+        System.out.println("         ........");
+        System.out.println("         |      |]");
+        System.out.println("         \\      /");
+        System.out.println("          `----'");
+        System.out.println("==============================================\n");
     }
 }

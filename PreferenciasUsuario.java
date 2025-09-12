@@ -8,6 +8,16 @@ public class PreferenciasUsuario {
     private String[] retosPreferidos;
 
     // Constructor
+    public PreferenciasUsuario() {
+        this.tipoCafe = "";
+        this.tamanoTaza = "";
+        this.usaAzucar = false;
+        this.tipoAzucar = "";
+        this.usaLeche = false;
+        this.tipoLeche = "";
+        this.retosPreferidos = new String[0];
+    }
+    
     public PreferenciasUsuario(String tipoCafe, String tamanoTaza, boolean usaAzucar, String tipoAzucar, boolean usaLeche, String tipoLeche, String[] retosPreferidos) {
         this.tipoCafe = tipoCafe;
         this.tamanoTaza = tamanoTaza;

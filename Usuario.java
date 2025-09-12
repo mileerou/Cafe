@@ -40,6 +40,10 @@ public class Usuario {
         return correo;
     }
 
+    public String getContrasenaHash() {
+        return contrasenaHash;
+    }
+
     public Date getFechaRegistro() {
         return fechaRegistro;
     }

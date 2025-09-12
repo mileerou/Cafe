@@ -4,7 +4,6 @@ import java.util.Optional;
 public class UsuarioController {
     private ArrayList<Usuario> usuarios;
 
-    //Controlador
     public UsuarioController() {
         usuarios = new ArrayList<>();
     }

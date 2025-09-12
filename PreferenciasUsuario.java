@@ -7,15 +7,15 @@ public class PreferenciasUsuario {
     private String tipoLeche;
     private String[] retosPreferidos;
 
-    // Constructor con valores por defecto
+    // Constructor
     public PreferenciasUsuario(String tipoCafe, String tamañoTaza, boolean usaAzucar, String tipoAzucar, boolean usaLeche, String tipoLeche, String[] retosPreferidos) {
-        this.tipoCafe = (tipoCafe != null) ? tipoCafe : "Americano";
-        this.tamañoTaza = (tamañoTaza != null) ? tamañoTaza : "Mediana";
+        this.tipoCafe = tipoCafe;
+        this.tamañoTaza = tamañoTaza;
         this.usaAzucar = usaAzucar;
-        this.tipoAzucar = (tipoAzucar != null) ? tipoAzucar : "Blanca";
+        this.tipoAzucar = tipoAzucar;
         this.usaLeche = usaLeche;
-        this.tipoLeche = (tipoLeche != null) ? tipoLeche : "Entera";
-        this.retosPreferidos = (retosPreferidos != null) ? retosPreferidos : new String[0];
+        this.tipoLeche = tipoLeche;
+        this.retosPreferidos = retosPreferidos;
     }
     
      // Getters

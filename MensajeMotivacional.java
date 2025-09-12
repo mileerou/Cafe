@@ -9,6 +9,8 @@ public class MensajeMotivacional {
 
     public String getContenido() { return contenido; }
 
+    public String getId() { return id; }
+
     public String toString() {
         return "💡 " + contenido;
     }

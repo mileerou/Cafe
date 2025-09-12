@@ -7,7 +7,7 @@ public class Usuario {
     private String correo;
     private String contrasenaHash;
     private Date fechaRegistro;
-    private PreferenciaUsuario preferencias;
+    private PreferenciasUsuario preferencias;
     private int puntos;
     private ArrayList<Consumo> consumos;
     private ArrayList<Meta> metas;
@@ -19,7 +19,7 @@ public class Usuario {
         this.correo = correo;
         this.contrasenaHash = contrasenaHash;
         this.fechaRegistro = new Date();
-        this.preferencias = new PreferenciaUsuario();
+        this.preferencias = new PreferenciasUsuario();
         this.puntos = 0;
         this.consumos = new ArrayList<>();
         this.metas = new ArrayList<>();
@@ -46,7 +46,7 @@ public class Usuario {
         return puntos;
     }
 
-    public void setPreferencias(PreferenciaUsuario preferencias) {
+    public void setPreferencias(PreferenciasUsuario preferencias) {
         this.preferencias = preferencias;
     }
 

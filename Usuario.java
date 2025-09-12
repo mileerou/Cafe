@@ -12,7 +12,7 @@ public class Usuario {
     private ArrayList<Consumo> consumos;
     private ArrayList<Meta> metas;
     private ArrayList<Premio> premiosCanjeados;
-
+    private boolean primerLogin;
     public Usuario(String id, String nombre, String correo, String contrasenaHash) {
         this.id = id;
         this.nombre = nombre;
@@ -24,6 +24,7 @@ public class Usuario {
         this.consumos = new ArrayList<>();
         this.metas = new ArrayList<>();
         this.premiosCanjeados = new ArrayList<>();
+        this.primerLogin = true;
     }
 
     // Getters
@@ -67,7 +68,10 @@ public class Usuario {
     public ArrayList<Premio> getPremiosCanjeados() {
         return premiosCanjeados;
     }
-
+    
+    public boolean isPrimerLogin() {
+        return primerLogin;
+    }
 
     //Setters
 
@@ -97,6 +101,10 @@ public class Usuario {
 
     public void agregarPremioCanjeado(Premio premio) {
         this.premiosCanjeados.add(premio);
+    }
+
+    public void setPrimerLogin(boolean primerLogin) {
+        this.primerLogin = primerLogin;
     }
 
     @Override

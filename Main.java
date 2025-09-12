@@ -82,6 +82,9 @@ public class Main{
                         String contrasenaLogin = sc.nextLine();
                         String contraseñaLoginHash = HashUtil.hashPassword(contrasenaLogin);
                         usuarioActual = usuarioController.login(correoLogin, contraseñaLoginHash);
+                        if(usuarioActual.isPrimerLogin()) {
+                            usuarioActual.setPrimerLogin(false); 
+                        }
                         System.out.println("¡Inicio de sesión exitoso! Bienvenido, " + usuarioActual.getNombre() + ".\n");
                         mostrarMenuUsuario(sc, usuarioActual);
                     }catch (Exception e){

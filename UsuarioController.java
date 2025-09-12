@@ -8,6 +8,10 @@ public class UsuarioController {
         usuarios = new ArrayList<>();
     }
 
+    public boolean esPrimerLogin(Usuario usuario) {
+        return usuario.isPrimerLogin();
+    }
+
     public void registrarUsuario(String id, String nombre, String coreo, String contrasenaHash) throws Exception{
         Optional<Usuario> existente = usuarios.stream()
             .filter(u -> u.getCorreo().equals(coreo))
@@ -24,5 +28,6 @@ public class UsuarioController {
             .filter(u -> u.getCorreo().equals(correo) && u.getContrasenaHash().equals(contrasenaHash))
             .findFirst()
             .orElseThrow(() -> new Exception("Credenciales inválidas."));
+            
     }
 }

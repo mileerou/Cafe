@@ -18,4 +18,72 @@ public class PreferenciasUsuario {
         this.retosPreferidos = (retosPreferidos != null) ? retosPreferidos : new String[0];
     }
     
+     // Getters
+    public String getTipoCafe() {
+        return tipoCafe;
+    }
+
+    public String getTamañoTaza() {
+        return tamañoTaza;
+    }
+
+    public boolean isUsaAzucar() {
+        return usaAzucar;
+    }   
+
+    public String getTipoAzucar() {
+        return tipoAzucar;
+    }
+
+    public boolean isUsaLeche() {
+        return usaLeche;
+    }
+
+    public String getTipoLeche() {
+        return tipoLeche;
+    }
+
+    public String[] getRetosPreferidos() {
+        return retosPreferidos;
+    }
+
+    // Setters
+    public void setTipoCafe(String tipoCafe) {
+        this.tipoCafe = tipoCafe;
+    }
+
+    public void setTamañoTaza(String tamañoTaza) {
+        this.tamañoTaza = tamañoTaza;
+    }
+
+    public void setUsaAzucar(boolean usaAzucar) {
+        this.usaAzucar = usaAzucar;
+    }
+
+    public void setTipoAzucar(String tipoAzucar) {
+        this.tipoAzucar = tipoAzucar;
+    }
+
+    public void setUsaLeche(boolean usaLeche) {
+        this.usaLeche = usaLeche;
+    }
+
+    public void setTipoLeche(String tipoLeche) {
+        this.tipoLeche = tipoLeche;
+    }
+
+    public void setRetosPreferidos(String[] retosPreferidos) {
+        this.retosPreferidos = retosPreferidos;
+    }
+
+    @Override
+    public String toString(){
+        return "Tipo de café: " + tipoCafe + "\n" +
+               "Tamaño de taza: " + tamañoTaza + "\n" +
+               "Usa azúcar: " + (usaAzucar ? "Si" : "No") + "\n" +
+               "Tipo de azúcar: " + tipoAzucar + "\n" +
+               "Usa leche: " + (usaLeche ? "Si" : "No") + "\n" +
+               "Tipo de leche: " + tipoLeche + "\n" +
+               "Retos preferidos: " + (retosPreferidos.length > 0 ? String.join(", ", retosPreferidos) : "Ninguno");
+    }
 }

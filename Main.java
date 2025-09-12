@@ -19,7 +19,7 @@ public class Main{
         System.out.println("          `----'");
         System.out.println("==============================================\n");
         int opcion;
-        
+
         do {
             System.out.println("1. Registrar");
             System.out.println("2. Iniciar sesión");
@@ -55,9 +55,21 @@ public class Main{
                     } catch (Exception e){
                         System.out.println("Error al registrar usuario: " + e.getMessage());
                     }
+                    
                     break;
                 case 2:
-                    
+                    try{
+                        System.out.println("Iniciar sesión");
+                        System.out.print("Correo: ");
+                        String correoLogin = sc.nextLine();
+                        System.out.print("Contraseña: ");
+                        String contrasenaLogin = sc.nextLine();
+                        String contraseñaLoginHash = HashUtil.hashPassword(contrasenaLogin);
+                        usuarioActual = usuarioController.login(correoLogin, contraseñaLoginHash);
+                        System.out.println("¡Inicio de sesión exitoso! Bienvenido, " + usuarioActual.getNombre() + ".\n");
+                    }catch (Exception e){
+                        System.out.println("Error al iniciar sesión: " + e.getMessage());
+                    }
                     break;
                 case 3:
                     System.out.println("Gracias por usar Movaccino. ¡Hasta luego!");

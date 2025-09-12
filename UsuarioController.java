@@ -1,3 +1,6 @@
+import java.util.ArrayList;
+import java.util.Optional;
+
 public class UsuarioController {
     private ArrayList<Usuario> usuarios;
 
@@ -17,8 +20,8 @@ public class UsuarioController {
         usuarios.add(new Usuario(id, nombre, coreo, contrasenaHash));
     }
 
-    public Usuario login (String correo, String contrasenaHash) trows Exception {
-        retunr usuarios.stream()
+    public Usuario login (String correo, String contrasenaHash) throws Exception {
+        return usuarios.stream()
             .filter(u -> u.getCorreo().equals(correo) && u.getContrasenaHash().equals(contrasenaHash))
             .findFirst()
             .orElseThrow(() -> new Exception("Credenciales inválidas."));

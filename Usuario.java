@@ -82,4 +82,28 @@ public class Usuario {
     public void restarPuntos(int cantidad){
         puntos = Math.max(0, puntos - cantidad);
     }
+
+    public void setPuntos(int puntos) {
+        this.puntos = puntos;
+    }
+
+    public void agregarMeta(Meta meta) {
+        this.metas.add(meta);
+    }
+
+    public void agregarPremioCanjeado(Premio premio) {
+        this.premiosCanjeados.add(premio);
+    }
+
+    @Override
+    public String toString() {
+        return "Usuario{" +
+                "id='" + id + '\'' +
+                ", nombre='" + nombre + '\'' +
+                ", correo='" + correo + '\'' +
+                ", fechaRegistro=" + fechaRegistro +
+                ", puntos=" + puntos +
+                ", preferencias=" + preferencias +
+                '}';
+    }
 }

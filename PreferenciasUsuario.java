@@ -1,6 +1,6 @@
 public class PreferenciasUsuario {
     private String tipoCafe;
-    private String tamañoTaza;
+    private String tamanoTaza;
     private boolean usaAzucar;
     private String tipoAzucar;
     private boolean usaLeche;
@@ -8,9 +8,9 @@ public class PreferenciasUsuario {
     private String[] retosPreferidos;
 
     // Constructor
-    public PreferenciasUsuario(String tipoCafe, String tamañoTaza, boolean usaAzucar, String tipoAzucar, boolean usaLeche, String tipoLeche, String[] retosPreferidos) {
+    public PreferenciasUsuario(String tipoCafe, String tamanoTaza, boolean usaAzucar, String tipoAzucar, boolean usaLeche, String tipoLeche, String[] retosPreferidos) {
         this.tipoCafe = tipoCafe;
-        this.tamañoTaza = tamañoTaza;
+        this.tamanoTaza = tamanoTaza;
         this.usaAzucar = usaAzucar;
         this.tipoAzucar = tipoAzucar;
         this.usaLeche = usaLeche;
@@ -24,7 +24,7 @@ public class PreferenciasUsuario {
     }
 
     public String getTamañoTaza() {
-        return tamañoTaza;
+        return tamanoTaza;
     }
 
     public boolean isUsaAzucar() {
@@ -53,7 +53,7 @@ public class PreferenciasUsuario {
     }
 
     public void setTamañoTaza(String tamañoTaza) {
-        this.tamañoTaza = tamañoTaza;
+        this.tamanoTaza = tamañoTaza;
     }
 
     public void setUsaAzucar(boolean usaAzucar) {
@@ -79,7 +79,7 @@ public class PreferenciasUsuario {
     @Override
     public String toString(){
         return "Tipo de café: " + tipoCafe + "\n" +
-               "Tamaño de taza: " + tamañoTaza + "\n" +
+               "Tamaño de taza: " + tamanoTaza + "\n" +
                "Usa azúcar: " + (usaAzucar ? "Si" : "No") + "\n" +
                "Tipo de azúcar: " + tipoAzucar + "\n" +
                "Usa leche: " + (usaLeche ? "Si" : "No") + "\n" +

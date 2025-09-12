@@ -26,6 +26,8 @@ public class Usuario {
         this.premiosCanjeados = new ArrayList<>();
     }
 
+    // Getters
+
     public String getId() {
         return id;
     }
@@ -45,6 +47,25 @@ public class Usuario {
     public int getPuntos() {
         return puntos;
     }
+
+    public PreferenciasUsuario getPreferencias() {
+        return preferencias;
+    }
+
+    public ArrayList<Consumo> getConsumos() {
+        return consumos;
+    }
+
+    public ArrayList<Meta> getMetas() {
+        return metas;
+    }
+
+    public ArrayList<Premio> getPremiosCanjeados() {
+        return premiosCanjeados;
+    }
+
+
+    //Setters
 
     public void setPreferencias(PreferenciasUsuario preferencias) {
         this.preferencias = preferencias;

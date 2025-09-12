@@ -1,5 +1,7 @@
 public class MensajeMotivacional {
-    private String contenido;
-    public MensajeMotivacional(String contenido) { this.contenido = contenido; }
-    public String toString() { return "💡 " + contenido; }
+    private String id, contenido, tipo;
+    public MensajeMotivacional(String id, String contenido, String tipo) {
+        this.id = id; this.contenido = contenido; this.tipo = tipo;
+    }
+    public String toString() { return "[" + tipo + "] " + contenido; }
 }

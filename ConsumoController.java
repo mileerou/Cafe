@@ -3,9 +3,11 @@ import java.util.Scanner;
 
 public class ConsumoController {
     private ArrayList<Consumo> consumos;
+    private Usuario usuario; // Asegúrate de importar la clase Usuario
 
-   public ConsumoController() {
+    public ConsumoController(Usuario usuario) {
         this.consumos = new ArrayList<>();
+        this.usuario = usuario;
     }
 
     public void guardarConsumoDiario(){
@@ -57,7 +59,7 @@ public class ConsumoController {
         }
     }
 
-    public void obtenerResumenConsumo(){
+    public String obtenerResumenConsumo(){
         return "----Resumen de Consumos----\n" +
                "Total de consumos: " + consumos.size() + "\n" +
                "Puntos acumulados: " + usuario.getPuntos() + "\n";

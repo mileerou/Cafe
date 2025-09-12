@@ -1,6 +1,7 @@
 import java.util.Scanner;
 import java.util.Date;
 import java.util.UUID;
+import java.time.LocalDate;
 public class Main{
     public static void main(String[] args) {
         Scanner sc = new Scanner (System.in);
@@ -103,9 +104,25 @@ public class Main{
             }
             switch(opcion){
                 case 1:
-                    try{
-                       
-                    } catch (Exception e){
+                    try {
+                        Date fecha = new Date();
+                        System.out.print("Tamaño de taza: ");
+                        String tamanoTaza = sc.nextLine();
+                        System.out.print("Tipo de azúcar: ");
+                        String tipoAzucar = sc.nextLine();
+                        System.out.print("Tipo de leche: ");
+                        String tipoLeche = sc.nextLine();
+                        System.out.print("Tipo de café: ");
+                        String tipoCafe = sc.nextLine();
+                        System.out.print("¿Algún comentario extra? ");
+                        String respuestasExtras = sc.nextLine();
+
+                        ConsumoController consumoController = new ConsumoController(usuarioActual);
+
+                        consumoController.guardarConsumoDiario(fecha, tamanoTaza, tipoAzucar, tipoLeche, tipoCafe, respuestasExtras);
+
+                        System.out.println("¡Consumo registrado exitosamente!\n");
+                    } catch (Exception e) {
                         System.out.println("Error al registrar consumo: " + e.getMessage());
                     }
                     break;

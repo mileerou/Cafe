@@ -1,4 +1,4 @@
-import java.io.*;
+import java.io.*; //importe todas las clases y interfaces contenidas en el paquete java.io
 
 public class PreferenciasUsuarioController {
 

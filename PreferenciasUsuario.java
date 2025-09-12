@@ -1,4 +1,9 @@
-public class PreferenciasUsuario {
+import java.io.Serializable;
+
+public class PreferenciasUsuario implements Serializable{
+
+    private static final long serialVersionUID = 1L;
+    
     private String tipoCafe;
     private String tamanoTaza;
     private boolean usaAzucar;

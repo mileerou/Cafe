@@ -20,7 +20,8 @@ public class ConsumoController {
             throw new RuntimeException("Error al guardar el consumo diario: " + e.getMessage());
         }
     }
-
+    /*
+    Comentado porque en Main el método necesitaba un arraylist de Consumo y no de String
     public String obtenerHistorialConsumo() {
         StringBuilder historial = new StringBuilder();
         if (consumos.isEmpty()) {
@@ -33,6 +34,9 @@ public class ConsumoController {
             historial.append("---------------------\n");
         }
         return historial.toString();
+    }*/
+    public ArrayList<Consumo> obtenerHistorialConsumo() {
+        return usuario.getConsumos();
     }
 
     public String obtenerResumenConsumo(){

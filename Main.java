@@ -2,6 +2,7 @@ import java.util.Scanner;
 import java.util.Date;
 import java.util.UUID;
 import java.time.LocalDate;
+import java.util.ArrayList;
 public class Main{
     public static void main(String[] args) {
         Scanner sc = new Scanner (System.in);
@@ -41,7 +42,14 @@ public class Main{
                         System.out.print("Nombre: ");
                         String nombre = sc.nextLine();
                         System.out.print("Correo: ");
-                        String correo = sc.nextLine();
+                        String correo;
+                        do {
+                            System.out.print("Correo: ");
+                            correo = sc.nextLine();
+                            if (!correo.contains("@")) {
+                                System.out.println("Por favor, ingresa un correo válido (debe contener '@').");
+                            }
+                        } while (!correo.contains("@"));
                         System.out.print("Contraseña: ");
                         String contrasena = sc.nextLine();
                         String contrasenaHash = HashUtil.hashPassword(contrasena);
@@ -62,7 +70,14 @@ public class Main{
                     try{
                         System.out.println("Iniciar sesión");
                         System.out.print("Correo: ");
-                        String correoLogin = sc.nextLine();
+                        String correoLogin;
+                        do {
+                            System.out.print("Correo: ");
+                            correoLogin = sc.nextLine();
+                            if (!correoLogin.contains("@")) {
+                                System.out.println("Por favor, ingresa un correo válido (debe contener '@').");
+                            }
+                        } while (!correoLogin.contains("@"));
                         System.out.print("Contraseña: ");
                         String contrasenaLogin = sc.nextLine();
                         String contraseñaLoginHash = HashUtil.hashPassword(contrasenaLogin);
@@ -106,7 +121,7 @@ public class Main{
                 case 1:
                     try {
                         Date fecha = new Date();
-                        System.out.print("Tamaño de taza: ");
+                        System.out.print("Tamaño de taza (Oz): ");
                         String tamanoTaza = sc.nextLine();
                         System.out.print("Tipo de azúcar: ");
                         String tipoAzucar = sc.nextLine();
@@ -127,7 +142,25 @@ public class Main{
                     }
                     break;
                 case 2:
-                    
+                    ConsumoController consumoController = new ConsumoController(usuarioActual);
+                    ArrayList<Consumo> historial = consumoController.obtenerHistorialConsumo();
+                    if (historial.isEmpty()) {
+                        System.out.println("No hay consumos registrados.\n");
+                    } else {
+                        System.out.println("======= HISTORIAL DE CONSUMOS =======");
+                        for (Consumo consumo : historial) {
+                            System.out.println("╔══════════════════════════════════╗");
+                            System.out.println("║   ☕  Registro de Consumo        ║");
+                            System.out.println("╠══════════════════════════════════╣");
+                            System.out.printf ("║ Fecha: %-24s ║\n", consumo.getFecha());
+                            System.out.printf ("║ Tamaño de taza: %-16s ║\n", consumo.getTamañoTaza());
+                            System.out.printf ("║ Tipo de azúcar: %-16s ║\n", consumo.getTipoAzucar());
+                            System.out.printf ("║ Tipo de leche: %-16s ║\n", consumo.getTipoLeche());
+                            System.out.printf ("║ Tipo de café: %-17s ║\n", consumo.getTipoCafe());
+                            System.out.printf ("║ Extra: %-24s ║\n", consumo.getRespuestasExtras());
+                            System.out.println("╚══════════════════════════════════╝\n");
+                        }
+                    }
                     break;
                 case 3:
                     System.out.println("Cerrando sesión...\n");

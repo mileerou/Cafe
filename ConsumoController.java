@@ -10,7 +10,7 @@ public class ConsumoController {
         this.usuario = usuario;
     }
 
-    public void guardarConsumoDiario() {
+    public void guardarConsumoDiario(){
         Scanner sc = new Scanner(System.in);
         String tamanoTaza = "";
         String tipoAzucar = "N/A";
@@ -42,21 +42,22 @@ public class ConsumoController {
             consumos.add(nuevoConsumo);
 
         } catch (Exception e) {
-            // Handle input errors or unexpected exceptions
             throw new RuntimeException("Error al guardar el consumo diario: " + e.getMessage());
         }
     }
 
-    public void obtenerHistorialConsumo(){
+    public String obtenerHistorialConsumo() {
+        StringBuilder historial = new StringBuilder();
         if (consumos.isEmpty()) {
-            System.out.println("No hay consumos registrados.");
-            return;
+            historial.append("No hay consumos registrados.\n");
+            return historial.toString();
         }
-        System.out.println("Historial de Consumos:");
+        historial.append("Historial de Consumos:\n");
         for (Consumo consumo : consumos) {
-            System.out.println(consumo);
-            System.out.println("---------------------");
+            historial.append(consumo.toString()).append("\n");
+            historial.append("---------------------\n");
         }
+        return historial.toString();
     }
 
     public String obtenerResumenConsumo(){
@@ -70,7 +71,7 @@ public class ConsumoController {
         try {
             int puntosGanados = consumos.size() * 10;
             usuario.setPuntos(usuario.getPuntos() + puntosGanados);
-            // Instead of printing, you could return the points or update a log, etc.
+            
         } catch (Exception e) {
             throw new RuntimeException("Error al evaluar puntos: " + e.getMessage());
         }

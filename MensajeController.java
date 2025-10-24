@@ -96,7 +96,61 @@ public class MensajeController {
     }
 
     public MensajeMotivacional obtenerMensajesDelDia(String usuarioId, UsuarioController usuarioController) {
-        
+        try {
+            Usuario usuario = buscarUsuarioPorId(usuarioId, usuarioController);
+            if (usuario == null) {
+                return mensajesPredefinidos.get(random.nextInt(2));
+            }
+
+            // Evaluar progreso del usuario
+            int consumosHoy = contarConsumosHoy(usuario);
+            int metasPendientes = contarMetasPendientes(usuario);
+            int puntosActuales = usuario.getPuntos();
+
+            // Mensajes personalizados según el estado
+            if (usuario.isPrimerLogin()) {
+                return generarMensaje(
+                    "¡Bienvenido a Movaccino, " + usuario.getNombre() + "! 🎉 Comienza tu viaje hacia una vida más saludable",
+                    "primer_login",
+                    "primer_login == true"
+                );
+            }
+
+            if (consumosHoy == 0) {
+                return generarMensaje(
+                    "¡Buenos días, " + usuario.getNombre() + "! 🌅 No olvides registrar tu consumo de hoy",
+                    "recordatorio_diario",
+                    "consumos_hoy == 0"
+                );
+            }
+
+            if (metasPendientes > 0) {
+                return generarMensaje(
+                    "Tienes " + metasPendientes + " meta(s) pendiente(s). ¡Tú puedes completarlas! 💪",
+                    "metas_pendientes",
+                    "metas_pendientes > 0"
+                );
+            }
+
+            if (puntosActuales >= 100 && usuario.getPremiosCanjeados().isEmpty()) {
+                return generarMensaje(
+                    "¡Tienes " + puntosActuales + " puntos! ¿Qué tal si canjeas tu primer premio? 🎁",
+                    "sugerencia_premio",
+                    "puntos >= 100 && premios_canjeados == 0"
+                );
+            }
+
+            // Mensajes motivacionales generales (índices 8-9)
+            ArrayList<MensajeMotivacional> mensajesMotivacionales = new ArrayList<>();
+            for (int i = 8; i <= 9 && i < mensajesPredefinidos.size(); i++) {
+                mensajesMotivacionales.add(mensajesPredefinidos.get(i));
+            }
+            
+            return mensajesMotivacionales.get(random.nextInt(mensajesMotivacionales.size()));
+
+        } catch (Exception e) {
+            return mensajesPredefinidos.get(0);
+        }
     }
 
    

@@ -5,9 +5,11 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 
 public class Main {
+    private static UsuarioController usuarioController = new UsuarioController();
+    private static MensajeController mensajeController = new MensajeController();
+
     public static void main(String[] args) {
-        Scanner sc = new Scanner (System.in);
-        UsuarioController usuarioController = new UsuarioController();
+    Scanner sc = new Scanner (System.in);
         Usuario usuarioActual = null;
 
         System.out.println("==============================================");
@@ -61,6 +63,12 @@ public class Main {
                         System.out.println("Nombre: " + nombre);
                         System.out.println("Correo: " + correo + "\n");
                         System.out.println("Contraseña: " + contrasena);
+                        MensajeMotivacional mensajeBienvenida = mensajeController.generarMensaje(
+                            "¡Bienvenido a Movaccino, " + nombre + "! Estamos emocionados de acompañarte en este viaje 🌟",
+                            "registro",
+                            "nuevo_usuario"
+                        );
+                        mensajeController.mostrarMensaje(mensajeBienvenida);
                     } catch (Exception e){
                         System.out.println("Error al registrar usuario: " + e.getMessage());
                     }
@@ -86,6 +94,13 @@ public class Main {
                                 usuarioActual.setPrimerLogin(false);
                             }
                             System.out.println("¡Inicio de sesión exitoso! Bienvenido, " + usuarioActual.getNombre() + ".\n");
+
+                            MensajeMotivacional mensajeDelDia = mensajeController.obtenerMensajesDelDia(
+                                usuarioActual.getId(), 
+                                usuarioController
+                            );
+                            mensajeController.mostrarMensaje(mensajeDelDia);
+
                             mostrarMenuUsuario(sc, usuarioActual);
                         } else {
                             System.out.println("Credenciales incorrectas.");
@@ -146,6 +161,11 @@ public class Main {
                         consumoController.guardarConsumoDiario(fecha, tamanoTaza, tipoAzucar, tipoLeche, tipoCafe, respuestasExtras);
 
                         System.out.println("¡Consumo registrado exitosamente!\n");
+
+                        mensajeController.mostrarMensaje(
+                            mensajeController.obtenerMensajeRegistroConsumo()
+                        );
+
                     } catch (Exception e) {
                         System.out.println("Error al registrar consumo: " + e.getMessage());
                     }
@@ -169,6 +189,16 @@ public class Main {
                             System.out.printf("║ Extra: %-24s ║\n", consumo.getRespuestasExtras());
                             System.out.println("╚══════════════════════════════════╝\n");
                         }
+
+                        if (historial.size() >= 7) {
+                            MensajeMotivacional mensaje = mensajeController.generarMensaje(
+                                "¡Llevas " + historial.size() + " registros! Tu constancia es admirable 📈",
+                                "progreso",
+                                "consumos >= 7"
+                            );
+                            mensajeController.mostrarMensaje(mensaje);
+                        }
+
                     }
                     break;
                 case 3:
@@ -200,6 +230,12 @@ public class Main {
                     }
                     PreferenciasUsuario preferencias = new PreferenciasUsuario(tipoCafe, tamanoTaza, usaAzucar, tipoAzucar, usaLeche, tipoLeche, retosList.toArray(new String[0]));
                     preferenciasController.crearPreferencias(preferencias);
+                    MensajeMotivacional mensajePref = mensajeController.generarMensaje(
+                        "¡Preferencias guardadas! Conocerte mejor nos ayuda a brindarte una mejor experiencia 🎯",
+                        "preferencias",
+                        "preferencias_configuradas"
+                    );
+                    mensajeController.mostrarMensaje(mensajePref);
                     break;
                 case 4:
                     // Ver preferencias
@@ -260,6 +296,13 @@ public class Main {
 
                 case 6:
                     System.out.println("Cerrando sesión...\n");
+                     MensajeMotivacional mensajeDespedida = mensajeController.generarMensaje(
+                        "¡Hasta pronto, " + usuarioActual.getNombre() + "! Recuerda: cada día es una oportunidad para mejorar 🌟",
+                        "despedida",
+                        "cierre_sesion"
+                    );
+                    mensajeController.mostrarMensaje(mensajeDespedida);
+
                     usuarioActual = null;
                     break;
                 default:

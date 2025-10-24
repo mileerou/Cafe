@@ -198,4 +198,11 @@ public class MensajeController {
         }
     }
 
+    public MensajeMotivacional obtenerMensajeRegistroConsumo() {
+        ArrayList<MensajeMotivacional> mensajes = new ArrayList<>();
+        mensajes.add(mensajesPredefinidos.get(2));
+        mensajes.add(mensajesPredefinidos.get(3));
+        return mensajes.get(random.nextInt(mensajes.size()));
+    }
+
 }

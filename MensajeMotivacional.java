@@ -14,4 +14,12 @@ public class MensajeMotivacional {
     public String toString() {
         return "💡 " + contenido;
     }
+    
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public void setContenido(String contenido) {
+        this.contenido = contenido;
+    }
 }

@@ -117,7 +117,8 @@ public class Main {
             System.out.println("2. Ver historial de consumo");
             System.out.println("3. Configurar preferencias");
             System.out.println("4. Ver mis preferencias");
-            System.out.println("5. Cerrar sesión");
+            System.out.println("5. Modificar un campo de mi consumo de hoy");
+            System.out.println("6. Cerrar sesión");
             System.out.print("Elige una opción: ");
             String input = sc.nextLine();
             try {
@@ -219,12 +220,51 @@ public class Main {
                     }
                     break;
                 case 5:
+                    // Modificar consumo de hoy
+                    ConsumoController consumoControllerMod = new ConsumoController(usuarioActual);
+                    historial = consumoControllerMod.obtenerHistorialConsumo();
+                    
+                    if (historial.isEmpty()) {
+                        System.out.println("No hay consumo registrado hoy para modificar.\n");
+                        break;
+                    }
+
+                    System.out.println("Selecciona el número del consumo que deseas modificar:");
+                    for (int i = 0; i < historial.size(); i++) {
+                        System.out.println((i + 1) + ". " + historial.get(i));
+                    }
+
+                    System.out.print("Opción: ");
+                    opcion = sc.nextInt();
+                    sc.nextLine(); // limpiar buffer
+
+                    if (opcion < 1 || opcion > historial.size()) {
+                        System.out.println("Opción inválida.\n");
+                        break;
+                    }
+
+                    Consumo consumoSeleccionado = historial.get(opcion - 1);
+
+                    System.out.print("¿Qué campo deseas modificar? (tamanotaza, tipoazucar, tipoleche, tipocafe, respuestasextras): ");
+                    String campo = sc.nextLine();
+                    System.out.print("Nuevo valor: ");
+                    String nuevoValor = sc.nextLine();
+
+                    try {
+                        consumoSeleccionado.actualizarCampo(campo, nuevoValor);
+                        System.out.println("Campo actualizado correctamente.\n");
+                    } catch (IllegalArgumentException e) {
+                        System.out.println(e.getMessage());
+                    }
+                    break;
+
+                case 6:
                     System.out.println("Cerrando sesión...\n");
                     usuarioActual = null;
                     break;
                 default:
                     System.out.println("Opción inválida. Intente de nuevo.\n");
             }
-        } while (opcion != 5);
+        } while (opcion != 6);
     }
 }

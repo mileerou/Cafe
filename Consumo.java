@@ -69,15 +69,49 @@ public class Consumo {
         this.respuestasExtras = respuestasExtras;
     }
 
+    // metodo para actualizar un campo especifico
+
+    /**
+     * Permite actualizar un campo específico del consumo si el usuario se equivocó.
+     * @param campo El nombre del campo a actualizar (por ejemplo: "tipoLeche")
+     * @param nuevoValor El nuevo valor para ese campo
+     * @throws IllegalArgumentException si el campo no es válido
+     */
+    public void actualizarCampo(String campo, String nuevoValor) {
+        String campoNormalizado = campo.toLowerCase();
+        if (campoNormalizado.equals("tamanotaza") || campoNormalizado.equals("tamanotaza")) {
+            this.tamanoTaza = nuevoValor;
+            return;
+        }
+        if (campoNormalizado.equals("tipoazucar")) {
+            this.tipoAzucar = nuevoValor;
+            return;
+        }
+        if (campoNormalizado.equals("tipoleche")) {
+            this.tipoLeche = nuevoValor;
+            return;
+        }
+        if (campoNormalizado.equals("tipocafe")) {
+            this.tipoCafe = nuevoValor;
+            return;
+        }
+        if (campoNormalizado.equals("respuestasextras")) {
+            this.respuestasExtras = nuevoValor;
+            return;
+        }
+        throw new IllegalArgumentException("Campo no válido: " + campo);
+    }
+
     @Override
     public String toString() {
-        return "Consumo{" +
-                "fecha=" + fecha +
-                ", tamañoTaza='" + tamanoTaza + '\'' +
-                ", tipoAzucar='" + tipoAzucar + '\'' +
-                ", tipoLeche='" + tipoLeche + '\'' +
-                ", tipoCafe='" + tipoCafe + '\'' +
-                ", respuestasExtras='" + respuestasExtras + '\'' +
-                '}';
+        // Formatear la fecha para una mejor presentación
+         java.text.SimpleDateFormat formatoFecha = new java.text.SimpleDateFormat("dd/MM/yyyy HH:mm");
+        return "Consumo: " +
+                "\n fecha=" + formatoFecha.format(fecha) +
+                "\n tamañoTaza: " + tamanoTaza + "oz" +
+                "\n tipoAzucar: " + tipoAzucar +
+                "\n tipoLeche: " + tipoLeche +
+                "\n tipoCafe: " + tipoCafe +
+                "\n Extra: '" + respuestasExtras + "\n";
     }
 }

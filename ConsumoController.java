@@ -55,4 +55,9 @@ public class ConsumoController {
             throw new RuntimeException("Error al evaluar puntos: " + e.getMessage());
         }
     }
+
+    public void actualizarConsumo(Consumo consumoActualizado) {
+        // no va nada
+    }
+
 }

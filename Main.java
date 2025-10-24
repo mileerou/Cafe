@@ -126,7 +126,7 @@ public class Main {
         PreferenciasUsuarioController preferenciasController = new PreferenciasUsuarioController();
         do {
             System.out.println("   ^    ^  ");
-            System.out.println("  ( ; . ; ) つ ☕ ");
+            System.out.println("  ( ; . ; ) つ  ");
             System.out.println("  (     ⎠");
             System.out.println("  (      )  ");
             System.out.println(" (   ) (   )  ");
@@ -184,7 +184,7 @@ public class Main {
                         System.out.println("======= HISTORIAL DE CONSUMOS =======");
                         for (Consumo consumo : historial) {
                             System.out.println("╔══════════════════════════════════╗");
-                            System.out.println("║   ☕  Registro de Consumo        ║");
+                            System.out.println("║       Registro de Consumo        ║");
                             System.out.println("╠══════════════════════════════════╣");
                             System.out.printf("║ Fecha: %-24s ║\n", consumo.getFecha());
                             System.out.printf("║ Tamaño de taza: %-16s ║\n", consumo.getTamañoTaza());
@@ -197,7 +197,7 @@ public class Main {
 
                         if (historial.size() >= 7) {
                             MensajeMotivacional mensaje = mensajeController.generarMensaje(
-                                "¡Llevas " + historial.size() + " registros! Tu constancia es admirable 📈",
+                                "¡Llevas " + historial.size() + " registros! Tu constancia es admirable ",
                                 "progreso",
                                 "consumos >= 7"
                             );
@@ -236,7 +236,7 @@ public class Main {
                     PreferenciasUsuario preferencias = new PreferenciasUsuario(tipoCafe, tamanoTaza, usaAzucar, tipoAzucar, usaLeche, tipoLeche, retosList.toArray(new String[0]));
                     preferenciasController.crearPreferencias(preferencias);
                     MensajeMotivacional mensajePref = mensajeController.generarMensaje(
-                        "¡Preferencias guardadas! Conocerte mejor nos ayuda a brindarte una mejor experiencia 🎯",
+                        "¡Preferencias guardadas! Conocerte mejor nos ayuda a brindarte una mejor experiencia ",
                         "preferencias",
                         "preferencias_configuradas"
                     );
@@ -330,7 +330,7 @@ public class Main {
                 case 8:
                     System.out.println("Cerrando sesión...\n");
                      MensajeMotivacional mensajeDespedida = mensajeController.generarMensaje(
-                        "¡Hasta pronto, " + usuarioActual.getNombre() + "! Recuerda: cada día es una oportunidad para mejorar 🌟",
+                        "¡Hasta pronto, " + usuarioActual.getNombre() + "! Recuerda: cada día es una oportunidad para mejorar ",
                         "despedida",
                         "cierre_sesion"
                     );

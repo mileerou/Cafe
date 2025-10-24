@@ -60,4 +60,18 @@ public class ConsumoController {
                 .collect(Collectors.toCollection(ArrayList::new));
     }
 
+    // Obtener consumos por tipo de café
+    public ArrayList<Consumo> obtenerPorTipoCafe(String tipoCafe) {
+        return consumos.stream()
+                .filter(c -> c.getTipoCafe().equalsIgnoreCase(tipoCafe))
+                .collect(Collectors.toCollection(ArrayList::new));
+    }
+
+    // Obtener consumos por tamaño de taza
+    public ArrayList<Consumo> obtenerPorTamanoTaza(String tamanoTaza) {
+        return consumos.stream()
+                .filter(c -> c.getTamañoTaza().equalsIgnoreCase(tamanoTaza))
+                .collect(Collectors.toCollection(ArrayList::new));
+    }
+
 }

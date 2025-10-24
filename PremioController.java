@@ -13,6 +13,9 @@ public class PremioController {
         premios.add(premio);
     }
 
+    public ArrayList<Premio> getPremios() {
+    return premios;}
+
     // Obtener mensajes sobre premios disponibles
     public void mostrarMensajesPremios() {
         if (premios.isEmpty()) {

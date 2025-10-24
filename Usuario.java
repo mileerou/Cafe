@@ -107,6 +107,14 @@ public class Usuario {
         this.primerLogin = primerLogin;
     }
 
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public void setCorreo(String correo) {
+        this.correo = correo;
+    }
+
     @Override
     public String toString() {
         return "Usuario{" +

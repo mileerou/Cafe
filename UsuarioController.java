@@ -41,4 +41,13 @@ public class UsuarioController {
     public String obtenerPerfil(Usuario usuario) {
         return usuario.toString();
     }
+
+    public void actualizarUsuario(String id, String nuevoNombre, String nuevoCorreo) throws Exception {
+        Usuario usuario = buscarUsuarioPorId(id);
+        if (usuario == null) {
+            throw new Exception("Usuario no encontrado.");
+        }
+        usuario.setNombre(nuevoNombre);
+        usuario.setCorreo(nuevoCorreo);
+    }
 }

@@ -25,8 +25,36 @@ public class PreferenciasUsuarioController {
         return preferencias;
     }
 
-    //actualizador de arcivos
-    public void actualizarPreferencias(PreferenciasUsuario preferencias) {
-        crearPreferencias(preferencias); // Simplemente sobrescribe el archivo existente
+    public void actualizarPreferencias(String tipoCafe, String tamanoTaza, Boolean usaAzucar, String tipoAzucar,
+                                       Boolean usaLeche, String tipoLeche, String[] retosPreferidos) {
+        PreferenciasUsuario actuales = obtenerPreferencias();
+        if (actuales == null) {
+            actuales = new PreferenciasUsuario();
+        }
+
+        if (tipoCafe != null && !tipoCafe.trim().isEmpty()) {
+            actuales.setTipoCafe(tipoCafe);
+        }
+        if (tamanoTaza != null && !tamanoTaza.trim().isEmpty()) {
+            actuales.setTamañoTaza(tamanoTaza);
+        }
+        if (usaAzucar != null) {
+            actuales.setUsaAzucar(usaAzucar);
+        }
+        if (tipoAzucar != null && !tipoAzucar.trim().isEmpty()) {
+            actuales.setTipoAzucar(tipoAzucar);
+        }
+        if (usaLeche != null) {
+            actuales.setUsaLeche(usaLeche);
+        }
+        if (tipoLeche != null && !tipoLeche.trim().isEmpty()) {
+            actuales.setTipoLeche(tipoLeche);
+        }
+        if (retosPreferidos != null && retosPreferidos.length > 0) {
+            actuales.setRetosPreferidos(retosPreferidos);
+        }
+
+        crearPreferencias(actuales);
     }
 }
+

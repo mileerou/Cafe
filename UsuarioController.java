@@ -30,4 +30,15 @@ public class UsuarioController {
             .orElseThrow(() -> new Exception("Credenciales inválidas."));
             
     }
+
+    public Usuario buscarUsuarioPorId(String id) {
+        return usuarios.stream()
+            .filter(u -> u.getId().equals(id))
+            .findFirst()
+            .orElse(null);
+    }
+
+    public String obtenerPerfil(Usuario usuario) {
+        return usuario.toString();
+    }
 }

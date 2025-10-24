@@ -155,6 +155,8 @@ public class MensajeController {
 
    
     public MensajeMotivacional generarMensaje(String contenido, String tipo, String condicionAparecer) {
+        String nuevoId = "msg_custom_" + System.currentTimeMillis();
+        return new MensajeMotivacional(nuevoId, contenido);
     }
 
     private Usuario buscarUsuarioPorId(String usuarioId, UsuarioController usuarioController) {

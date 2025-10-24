@@ -39,7 +39,60 @@ public class MensajeController {
     }
 
     public MensajeMotivacional obtenerMensaje(String usuarioId, UsuarioController usuarioController) {
-        
+        try {
+            Usuario usuario = buscarUsuarioPorId(usuarioId, usuarioController);
+            if (usuario == null) {
+                return mensajesPredefinidos.get(random.nextInt(Math.min(4, mensajesPredefinidos.size())));
+            }
+
+            // Evaluar el estado del usuario y retornar mensaje apropiado
+            int metasCompletadas = contarMetasCompletadas(usuario);
+            int premiosCanjeados = usuario.getPremiosCanjeados().size();
+            int consumosRegistrados = usuario.getConsumos().size();
+            int puntosActuales = usuario.getPuntos();
+
+            // Priorizar mensajes según logros
+            if (metasCompletadas > 0 && metasCompletadas % 5 == 0) {
+                // Mensaje especial cada 5 metas
+                return generarMensaje(
+                    "🏆 ¡IMPRESIONANTE! Has completado " + metasCompletadas + " metas. ¡Eres un campeón!",
+                    "meta_especial",
+                    "metas_completadas >= 5"
+                );
+            }
+
+            if (premiosCanjeados > 0 && premiosCanjeados % 3 == 0) {
+                // Mensaje especial cada 3 premios
+                return generarMensaje(
+                    "🎊 ¡WOW! Ya has canjeado " + premiosCanjeados + " premios. ¡Increíble progreso!",
+                    "premio_especial",
+                    "premios_canjeados >= 3"
+                );
+            }
+
+            if (consumosRegistrados >= 30) {
+                return generarMensaje(
+                    "📈 ¡Un mes completo de registros! Tu compromiso es inspirador",
+                    "racha_consumos",
+                    "consumos >= 30"
+                );
+            }
+
+            if (puntosActuales >= 500) {
+                return generarMensaje(
+                    "💎 ¡Tienes " + puntosActuales + " puntos! Estás muy cerca de premios increíbles",
+                    "puntos_altos",
+                    "puntos >= 500"
+                );
+            }
+
+            // Mensaje aleatorio de motivación
+            return mensajesPredefinidos.get(random.nextInt(mensajesPredefinidos.size()));
+
+        } catch (Exception e) {
+            // En caso de error, retornar un mensaje genérico
+            return mensajesPredefinidos.get(0);
+        }
     }
 
     public MensajeMotivacional obtenerMensajesDelDia(String usuarioId, UsuarioController usuarioController) {
@@ -48,6 +101,45 @@ public class MensajeController {
 
    
     public MensajeMotivacional generarMensaje(String contenido, String tipo, String condicionAparecer) {
+    }
+
+    private Usuario buscarUsuarioPorId(String usuarioId, UsuarioController usuarioController) {
+        return usuarioController.buscarUsuarioPorId(usuarioId);
+    }
+
+    private int contarMetasCompletadas(Usuario usuario) {
+        int count = 0;
+        for (Meta meta : usuario.getMetas()) {
+            if (meta.isCompletada()) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    private int contarMetasPendientes(Usuario usuario) {
+        int count = 0;
+        for (Meta meta : usuario.getMetas()) {
+            if (!meta.isCompletada()) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    private int contarConsumosHoy(Usuario usuario) {
+        // Esta lógica debería verificar consumos de hoy
+        // Por simplicidad, retornamos el total
+        return usuario.getConsumos().size();
+    }
+
+    // Método auxiliar para mostrar mensaje en consola
+    public void mostrarMensaje(MensajeMotivacional mensaje) {
+        if (mensaje != null) {
+            System.out.println("\n╔════════════════════════════════════════════════════════════╗");
+            System.out.println("║  " + mensaje.toString());
+            System.out.println("╚════════════════════════════════════════════════════════════╝\n");
+        }
     }
 
 }

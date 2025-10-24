@@ -70,7 +70,7 @@ public class Consumo {
     }
 
     // metodo para actualizar un campo especifico
-
+    // Aca esta el metodo
     /**
      * Permite actualizar un campo específico del consumo si el usuario se equivocó.
      * @param campo El nombre del campo a actualizar (por ejemplo: "tipoLeche")

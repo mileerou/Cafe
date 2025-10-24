@@ -12,7 +12,7 @@ public class MensajeMotivacional {
     public String getId() { return id; }
 
     public String toString() {
-        return "💡 " + contenido;
+        return contenido;
     }
     
     public void setId(String id) {

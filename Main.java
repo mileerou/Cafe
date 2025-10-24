@@ -7,6 +7,9 @@ import java.util.ArrayList;
 public class Main {
     private static UsuarioController usuarioController = new UsuarioController();
     private static MensajeController mensajeController = new MensajeController();
+    private static PremioController premioController = new PremioController();
+    private static TiendaVirtual tienda = new TiendaVirtual(premioController);
+    private static ArrayList<Premio> catalogo = tienda.obtenerCatalogo();
 
     public static void main(String[] args) {
     Scanner sc = new Scanner (System.in);
@@ -132,8 +135,10 @@ public class Main {
             System.out.println("2. Ver historial de consumo");
             System.out.println("3. Configurar preferencias");
             System.out.println("4. Ver mis preferencias");
-            System.out.println("5. Modificar un campo de mi consumo de hoy");
-            System.out.println("6. Cerrar sesión");
+            System.out.println("5. Ver mis puntos");
+            System.out.println("6. Modificar un campo de mi consumo de hoy");
+            System.out.println("7. Ver tienda de premios");
+            System.out.println("8. Cerrar sesión");
             System.out.print("Elige una opción: ");
             String input = sc.nextLine();
             try {
@@ -254,8 +259,15 @@ public class Main {
                         }
                         System.out.println("Retos preferidos: " + java.util.Arrays.toString(pref.getRetosPreferidos()));
                     }
-                    break;
-                case 5:
+                break;
+
+                case 5: 
+                    // Ver puntos
+                    System.out.println("\n===== TUS PUNTOS =====");
+                    System.out.println("Puntos acumulados: " + usuarioActual.getPuntos() + " puntos\n");
+                break;
+
+                case 6:
                     // Modificar consumo de hoy
                     ConsumoController consumoControllerMod = new ConsumoController(usuarioActual);
                     historial = consumoControllerMod.obtenerHistorialConsumo();
@@ -292,9 +304,30 @@ public class Main {
                     } catch (IllegalArgumentException e) {
                         System.out.println(e.getMessage());
                     }
-                    break;
+                break;
 
-                case 6:
+                case 7:
+                    System.out.println("\n===== TIENDA DE PREMIOS =====");
+                    for (Premio premio : catalogo) {
+                        System.out.println("ID: " + premio.getId());
+                        System.out.println("Nombre: " + premio.getNombre());
+                        System.out.println("Descripción: " + premio.getDescripcion());
+                        System.out.println("Puntos requeridos: " + premio.getPuntosRequeridos());
+                        System.out.println("Stock disponible: " + premio.getStock());
+                        System.out.println("---------------------------");
+                    }
+
+                    System.out.print("¿Deseas canjear algún premio? (si/no): ");
+                    String respuestaCanjear = sc.nextLine();
+                    if (respuestaCanjear.equalsIgnoreCase("si")) {
+                        System.out.print("Ingresa el ID del premio que deseas canjear: ");
+                        String premioId = sc.nextLine();
+                        String resultadoCanje = premioController.canjearPremio(usuarioActual, premioId);
+                        System.out.println(resultadoCanje + "\n");
+                    }
+                break;
+
+                case 8:
                     System.out.println("Cerrando sesión...\n");
                      MensajeMotivacional mensajeDespedida = mensajeController.generarMensaje(
                         "¡Hasta pronto, " + usuarioActual.getNombre() + "! Recuerda: cada día es una oportunidad para mejorar 🌟",
@@ -310,4 +343,6 @@ public class Main {
             }
         } while (opcion != 6);
     }
+
+    
 }

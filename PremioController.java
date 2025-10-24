@@ -31,4 +31,29 @@ public class PremioController {
             System.out.println(mensaje);
         }
     }
+
+    public String canjearPremio(Usuario usuario, String premioId) {
+        Premio premio = premios.stream()
+                               .filter(p -> p.getId().equals(premioId))
+                               .findFirst()
+                               .orElse(null);
+
+        if (premio == null) {
+            return "Premio no encontrado.";
+        }
+
+        if (!premio.isDisponible()) {
+            return "El premio está agotado.";
+        }
+
+        if (usuario.getPuntos() < premio.getPuntosRequeridos()) {
+            return "No tienes suficientes puntos para canjear este premio.";
+        }
+
+        // Realizar el canje
+        usuario.restarPuntos(premio.getPuntosRequeridos());
+        premio.setStock(premio.getStock() - 1);
+
+        return "Has canjeado el premio: " + premio.getNombre() + ". ¡Disfrútalo!";
+    }
 }

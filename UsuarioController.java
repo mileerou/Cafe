@@ -50,4 +50,18 @@ public class UsuarioController {
         usuario.setNombre(nuevoNombre);
         usuario.setCorreo(nuevoCorreo);
     }
+
+    public void sumarPuntos(Usuario usuario, int puntos){
+        if (puntos > 0){
+            usuario.setPuntos(usuario.getPuntos() + puntos);
+        }
+
+    }
+    
+
+    public void restarPuntos(Usuario usuario, int puntos){
+        if (puntos > 0 && usuario.getPuntos() >= puntos){
+            usuario.setPuntos(usuario.getPuntos() - puntos);
+        }
+    }
 }

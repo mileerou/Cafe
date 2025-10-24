@@ -27,7 +27,7 @@ public class PremioController {
         for (Premio premio : premios) {
             String mensaje = "Premio: " + premio.getNombre() +
                              " | Puntos requeridos: " + premio.getPuntosRequeridos() +
-                             " | Stock: " + (premio.isDisponible() ? "Disponible ✅" : "Agotado ❌");
+                             " | Stock: " + (premio.isDisponible() ? "Disponible " : "Agotado ");
             System.out.println(mensaje);
         }
     }

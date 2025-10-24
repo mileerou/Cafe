@@ -14,28 +14,28 @@ public class MensajeController {
    
     private void inicializarMensajes() {
         // Mensajes de bienvenida
-        mensajesPredefinidos.add(new MensajeMotivacional("msg_001", "¡Bienvenido de nuevo! Hoy es un gran día para reducir tu consumo de café ☕"));
-        mensajesPredefinidos.add(new MensajeMotivacional("msg_002", "¡Cada pequeño paso cuenta! Registra tu consumo diario 📝"));
+        mensajesPredefinidos.add(new MensajeMotivacional("msg_001", "¡Bienvenido de nuevo! Hoy es un gran día para reducir tu consumo de café "));
+        mensajesPredefinidos.add(new MensajeMotivacional("msg_002", "¡Cada pequeño paso cuenta! Registra tu consumo diario "));
         
         // Mensajes después de registrar consumo
-        mensajesPredefinidos.add(new MensajeMotivacional("msg_003", "¡Excelente! Has registrado tu consumo. La consciencia es el primer paso 💪"));
-        mensajesPredefinidos.add(new MensajeMotivacional("msg_004", "¡Bien hecho! Mantén el registro constante para ver tu progreso 📊"));
+        mensajesPredefinidos.add(new MensajeMotivacional("msg_003", "¡Excelente! Has registrado tu consumo. La consciencia es el primer paso "));
+        mensajesPredefinidos.add(new MensajeMotivacional("msg_004", "¡Bien hecho! Mantén el registro constante para ver tu progreso "));
         
         // Mensajes de metas completadas
-        mensajesPredefinidos.add(new MensajeMotivacional("msg_005", "🎉 ¡FELICIDADES! Has completado una meta. ¡Eres increíble!"));
-        mensajesPredefinidos.add(new MensajeMotivacional("msg_006", "🌟 ¡Meta alcanzada! Tu dedicación está dando frutos"));
+        mensajesPredefinidos.add(new MensajeMotivacional("msg_005", " ¡FELICIDADES! Has completado una meta. ¡Eres increíble!"));
+        mensajesPredefinidos.add(new MensajeMotivacional("msg_006", " ¡Meta alcanzada! Tu dedicación está dando frutos"));
         
         // Mensajes de puntos
-        mensajesPredefinidos.add(new MensajeMotivacional("msg_007", "💰 ¡Has ganado puntos! Sigue acumulando para canjear premios"));
-        mensajesPredefinidos.add(new MensajeMotivacional("msg_008", "⭐ ¡Puntos sumados! Estás más cerca de tu próximo premio"));
+        mensajesPredefinidos.add(new MensajeMotivacional("msg_007", " ¡Has ganado puntos! Sigue acumulando para canjear premios"));
+        mensajesPredefinidos.add(new MensajeMotivacional("msg_008", " ¡Puntos sumados! Estás más cerca de tu próximo premio"));
         
         // Mensajes motivacionales generales
-        mensajesPredefinidos.add(new MensajeMotivacional("msg_009", "Recuerda: el cambio es un proceso, no un evento 🌱"));
-        mensajesPredefinidos.add(new MensajeMotivacional("msg_010", "Tu salud te lo agradecerá. ¡Sigue adelante! 💚"));
+        mensajesPredefinidos.add(new MensajeMotivacional("msg_009", "Recuerda: el cambio es un proceso, no un evento "));
+        mensajesPredefinidos.add(new MensajeMotivacional("msg_010", "Tu salud te lo agradecerá. ¡Sigue adelante! "));
         
         // Mensajes de premios
-        mensajesPredefinidos.add(new MensajeMotivacional("msg_011", "🎁 ¡Premio canjeado! Disfruta tu recompensa, te lo mereces"));
-        mensajesPredefinidos.add(new MensajeMotivacional("msg_012", "✨ ¡Increíble! Has canjeado un premio. Sigue así"));
+        mensajesPredefinidos.add(new MensajeMotivacional("msg_011", " ¡Premio canjeado! Disfruta tu recompensa, te lo mereces"));
+        mensajesPredefinidos.add(new MensajeMotivacional("msg_012", " ¡Increíble! Has canjeado un premio. Sigue así"));
     }
 
     public MensajeMotivacional obtenerMensaje(String usuarioId, UsuarioController usuarioController) {
@@ -55,7 +55,7 @@ public class MensajeController {
             if (metasCompletadas > 0 && metasCompletadas % 5 == 0) {
                 // Mensaje especial cada 5 metas
                 return generarMensaje(
-                    "🏆 ¡IMPRESIONANTE! Has completado " + metasCompletadas + " metas. ¡Eres un campeón!",
+                    " ¡IMPRESIONANTE! Has completado " + metasCompletadas + " metas. ¡Eres un campeón!",
                     "meta_especial",
                     "metas_completadas >= 5"
                 );
@@ -64,7 +64,7 @@ public class MensajeController {
             if (premiosCanjeados > 0 && premiosCanjeados % 3 == 0) {
                 // Mensaje especial cada 3 premios
                 return generarMensaje(
-                    "🎊 ¡WOW! Ya has canjeado " + premiosCanjeados + " premios. ¡Increíble progreso!",
+                    " ¡WOW! Ya has canjeado " + premiosCanjeados + " premios. ¡Increíble progreso!",
                     "premio_especial",
                     "premios_canjeados >= 3"
                 );
@@ -72,7 +72,7 @@ public class MensajeController {
 
             if (consumosRegistrados >= 30) {
                 return generarMensaje(
-                    "📈 ¡Un mes completo de registros! Tu compromiso es inspirador",
+                    " ¡Un mes completo de registros! Tu compromiso es inspirador",
                     "racha_consumos",
                     "consumos >= 30"
                 );
@@ -80,7 +80,7 @@ public class MensajeController {
 
             if (puntosActuales >= 500) {
                 return generarMensaje(
-                    "💎 ¡Tienes " + puntosActuales + " puntos! Estás muy cerca de premios increíbles",
+                    " ¡Tienes " + puntosActuales + " puntos! Estás muy cerca de premios increíbles",
                     "puntos_altos",
                     "puntos >= 500"
                 );
@@ -118,7 +118,7 @@ public class MensajeController {
 
             if (consumosHoy == 0) {
                 return generarMensaje(
-                    "¡Buenos días, " + usuario.getNombre() + "! 🌅 No olvides registrar tu consumo de hoy",
+                    "¡Buenos días, " + usuario.getNombre() + "!  No olvides registrar tu consumo de hoy",
                     "recordatorio_diario",
                     "consumos_hoy == 0"
                 );
@@ -126,7 +126,7 @@ public class MensajeController {
 
             if (metasPendientes > 0) {
                 return generarMensaje(
-                    "Tienes " + metasPendientes + " meta(s) pendiente(s). ¡Tú puedes completarlas! 💪",
+                    "Tienes " + metasPendientes + " meta(s) pendiente(s). ¡Tú puedes completarlas! ",
                     "metas_pendientes",
                     "metas_pendientes > 0"
                 );
@@ -134,7 +134,7 @@ public class MensajeController {
 
             if (puntosActuales >= 100 && usuario.getPremiosCanjeados().isEmpty()) {
                 return generarMensaje(
-                    "¡Tienes " + puntosActuales + " puntos! ¿Qué tal si canjeas tu primer premio? 🎁",
+                    "¡Tienes " + puntosActuales + " puntos! ¿Qué tal si canjeas tu primer premio? ",
                     "sugerencia_premio",
                     "puntos >= 100 && premios_canjeados == 0"
                 );

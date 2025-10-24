@@ -115,6 +115,10 @@ public class Usuario {
         this.correo = correo;
     }
 
+    public void setContrasenaHash(String contrasenaHash) {
+        this.contrasenaHash = contrasenaHash;
+    }
+
     @Override
     public String toString() {
         return "Usuario{" +

@@ -126,7 +126,7 @@ public class Main {
         PreferenciasUsuarioController preferenciasController = new PreferenciasUsuarioController();
         do {
             System.out.println("   ^    ^  ");
-            System.out.println("  ( ; . ; ) つ  ");
+            System.out.println("  ( ; . ; ) つ ☕ ");
             System.out.println("  (     ⎠");
             System.out.println("  (      )  ");
             System.out.println(" (   ) (   )  ");
@@ -137,8 +137,9 @@ public class Main {
             System.out.println("4. Ver mis preferencias");
             System.out.println("5. Ver mis puntos");
             System.out.println("6. Modificar un campo de mi consumo de hoy");
-            System.out.println("7. Ver tienda de premios");
-            System.out.println("8. Cerrar sesión");
+            System.out.println("7. Actualizar usuario");
+            System.out.println("8. Ver tienda de premios");
+            System.out.println("9. Cerrar sesión");
             System.out.print("Elige una opción: ");
             String input = sc.nextLine();
             try {
@@ -174,7 +175,8 @@ public class Main {
                     } catch (Exception e) {
                         System.out.println("Error al registrar consumo: " + e.getMessage());
                     }
-                    break;
+                break;
+
                 case 2:
                     ConsumoController consumoController = new ConsumoController(usuarioActual);
                     ArrayList<Consumo> historial = consumoController.obtenerHistorialConsumo();
@@ -184,7 +186,7 @@ public class Main {
                         System.out.println("======= HISTORIAL DE CONSUMOS =======");
                         for (Consumo consumo : historial) {
                             System.out.println("╔══════════════════════════════════╗");
-                            System.out.println("║       Registro de Consumo        ║");
+                            System.out.println("║   ☕  Registro de Consumo        ║");
                             System.out.println("╠══════════════════════════════════╣");
                             System.out.printf("║ Fecha: %-24s ║\n", consumo.getFecha());
                             System.out.printf("║ Tamaño de taza: %-16s ║\n", consumo.getTamañoTaza());
@@ -197,7 +199,7 @@ public class Main {
 
                         if (historial.size() >= 7) {
                             MensajeMotivacional mensaje = mensajeController.generarMensaje(
-                                "¡Llevas " + historial.size() + " registros! Tu constancia es admirable ",
+                                "¡Llevas " + historial.size() + " registros! Tu constancia es admirable 📈",
                                 "progreso",
                                 "consumos >= 7"
                             );
@@ -205,7 +207,8 @@ public class Main {
                         }
 
                     }
-                    break;
+                break;
+
                 case 3:
                     // Formulario de preferencias
                     System.out.println("\n===== CONFIGURAR PREFERENCIAS =====");
@@ -236,12 +239,13 @@ public class Main {
                     PreferenciasUsuario preferencias = new PreferenciasUsuario(tipoCafe, tamanoTaza, usaAzucar, tipoAzucar, usaLeche, tipoLeche, retosList.toArray(new String[0]));
                     preferenciasController.crearPreferencias(preferencias);
                     MensajeMotivacional mensajePref = mensajeController.generarMensaje(
-                        "¡Preferencias guardadas! Conocerte mejor nos ayuda a brindarte una mejor experiencia ",
+                        "¡Preferencias guardadas! Conocerte mejor nos ayuda a brindarte una mejor experiencia 🎯",
                         "preferencias",
                         "preferencias_configuradas"
                     );
                     mensajeController.mostrarMensaje(mensajePref);
-                    break;
+                break;
+
                 case 4:
                     // Ver preferencias
                     System.out.println("\n===== TUS PREFERENCIAS =====");
@@ -307,6 +311,27 @@ public class Main {
                 break;
 
                 case 7:
+                    System.out.println("\n===== ACTUALIZAR USUARIO =====");
+                    System.out.print("Nuevo nombre (dejar en blanco para no cambiar): ");
+                    String nuevoNombre = sc.nextLine();
+                    System.out.print("Nuevo correo (dejar en blanco para no cambiar): ");
+                    String nuevoCorreo = sc.nextLine();
+                    System.out.print("Nueva contraseña (dejar en blanco para no cambiar): ");
+                    String nuevaContrasena = sc.nextLine();
+                    String nuevaContrasenaHash = nuevaContrasena.isEmpty() ? null : HashUtil.hashPassword(nuevaContrasena);
+
+                    usuarioController.actualizarUsuario(
+                        usuarioActual,
+                        nuevoNombre.isEmpty() ? usuarioActual.getNombre() : nuevoNombre,
+                        nuevoCorreo.isEmpty() ? usuarioActual.getCorreo() : nuevoCorreo,
+                        nuevaContrasenaHash == null ? null : nuevaContrasenaHash
+                    );
+
+                    System.out.println("Usuario actualizado correctamente.\n");
+
+                break;
+
+                case 8:
                     System.out.println("\n===== TIENDA DE PREMIOS =====");
                     for (Premio premio : catalogo) {
                         System.out.println("ID: " + premio.getId());
@@ -327,10 +352,10 @@ public class Main {
                     }
                 break;
 
-                case 8:
+                case 9:
                     System.out.println("Cerrando sesión...\n");
                      MensajeMotivacional mensajeDespedida = mensajeController.generarMensaje(
-                        "¡Hasta pronto, " + usuarioActual.getNombre() + "! Recuerda: cada día es una oportunidad para mejorar ",
+                        "¡Hasta pronto, " + usuarioActual.getNombre() + "! Recuerda: cada día es una oportunidad para mejorar 🌟",
                         "despedida",
                         "cierre_sesion"
                     );
@@ -341,7 +366,7 @@ public class Main {
                 default:
                     System.out.println("Opción inválida. Intente de nuevo.\n");
             }
-        } while (opcion != 6);
+        } while (opcion != 9);
     }
 
     

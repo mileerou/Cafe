@@ -110,7 +110,7 @@ public class MensajeController {
             // Mensajes personalizados según el estado
             if (usuario.isPrimerLogin()) {
                 return generarMensaje(
-                    "¡Bienvenido a Movaccino, " + usuario.getNombre() + "! 🎉 Comienza tu viaje hacia una vida más saludable",
+                    "¡Bienvenido a Movaccino, " + usuario.getNombre() + "!  Comienza tu viaje hacia una vida más saludable",
                     "primer_login",
                     "primer_login == true"
                 );

@@ -7,6 +7,7 @@ import java.util.ArrayList;
 public class Main {
     private static UsuarioController usuarioController = new UsuarioController();
     private static MensajeController mensajeController = new MensajeController();
+    private static MetaController metaController = new MetaController(usuarioController, mensajeController);
     private static PremioController premioController = new PremioController();
     private static TiendaVirtual tienda = new TiendaVirtual(premioController);
     private static ArrayList<Premio> catalogo = tienda.obtenerCatalogo();
@@ -72,6 +73,7 @@ public class Main {
                             "nuevo_usuario"
                         );
                         mensajeController.mostrarMensaje(mensajeBienvenida);
+                        metaController.crearMetasIniciales(id);
                     } catch (Exception e){
                         System.out.println("Error al registrar usuario: " + e.getMessage());
                     }
@@ -126,7 +128,7 @@ public class Main {
         PreferenciasUsuarioController preferenciasController = new PreferenciasUsuarioController();
         do {
             System.out.println("   ^    ^  ");
-            System.out.println("  ( ; . ; ) つ ☕ ");
+            System.out.println("  ( ; . ; ) つ  ");
             System.out.println("  (     ⎠");
             System.out.println("  (      )  ");
             System.out.println(" (   ) (   )  ");
@@ -139,7 +141,9 @@ public class Main {
             System.out.println("6. Modificar un campo de mi consumo de hoy");
             System.out.println("7. Actualizar usuario");
             System.out.println("8. Ver tienda de premios");
-            System.out.println("9. Cerrar sesión");
+            System.out.println("9. Ver mis metas");
+            System.out.println("10. Completar una meta");
+            System.out.println("11. Cerrar sesión");
             System.out.print("Elige una opción: ");
             String input = sc.nextLine();
             try {
@@ -171,6 +175,7 @@ public class Main {
                         mensajeController.mostrarMensaje(
                             mensajeController.obtenerMensajeRegistroConsumo()
                         );
+                        metaController.evaluarMetasCompletadas(usuarioActual.getId());
 
                     } catch (Exception e) {
                         System.out.println("Error al registrar consumo: " + e.getMessage());
@@ -244,6 +249,7 @@ public class Main {
                         "preferencias_configuradas"
                     );
                     mensajeController.mostrarMensaje(mensajePref);
+                    metaController.evaluarMetasCompletadas(usuarioActual.getId());
                 break;
 
                 case 4:
@@ -349,10 +355,53 @@ public class Main {
                         String premioId = sc.nextLine();
                         String resultadoCanje = premioController.canjearPremio(usuarioActual, premioId);
                         System.out.println(resultadoCanje + "\n");
+
+                        if(resultadoCanje.contains("exitosamente")){
+                            MensajeMotivacional mensajePremio = mensajeController.generarMensaje(
+                                "¡Felicidades por canjear tu premio!",
+                                "premio",
+                                "premio_canjeado"
+                            );
+                            mensajeController.mostrarMensaje(mensajePremio);
+
+                            metaController.evaluarMetasCompletadas(usuarioActual.getId());
+                        }
                     }
                 break;
-
                 case 9:
+                    metaController.obtenerMetas(usuarioActual.getId());
+                    break;
+                case 10:
+                    System.out.println("\n===== COMPLETAR META =====");
+                    
+                    ArrayList<Meta> metasUsuario = usuarioActual.getMetas();
+                    ArrayList<Meta> metasPendientes = new ArrayList<>();
+                    
+                    for (Meta meta : metasUsuario) {
+                        if (!meta.isCompletada()) {
+                            metasPendientes.add(meta);
+                        }
+                    }
+                    
+                    if (metasPendientes.isEmpty()) {
+                        System.out.println("¡Felicidades! No tienes metas pendientes.\n");
+                        break;
+                    }
+                    
+                    System.out.println("Metas pendientes:");
+                    for (int i = 0; i < metasPendientes.size(); i++) {
+                        Meta meta = metasPendientes.get(i);
+                        System.out.printf("%d. [%s] %s - %d puntos\n", 
+                            (i + 1), meta.getId(), meta.getDescripcion(), meta.getPuntosObjetivo());
+                    }
+                    
+                    System.out.print("\nIngresa el ID de la meta que completaste: ");
+                    String metaId = sc.nextLine();
+                    
+                    metaController.completarMeta(usuarioActual.getId(), metaId);
+
+                    break;
+                case 11:
                     System.out.println("Cerrando sesión...\n");
                      MensajeMotivacional mensajeDespedida = mensajeController.generarMensaje(
                         "¡Hasta pronto, " + usuarioActual.getNombre() + "! Recuerda: cada día es una oportunidad para mejorar 🌟",
@@ -366,7 +415,7 @@ public class Main {
                 default:
                     System.out.println("Opción inválida. Intente de nuevo.\n");
             }
-        } while (opcion != 9);
+        } while (opcion != 11);
     }
 
     

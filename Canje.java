@@ -13,7 +13,7 @@ public class Canje {
     }
 
     // Getters
-    public String getPremio() {
+    public Premio getPremio() {
         return premio;
     }
     public Date getFechaCanje() {

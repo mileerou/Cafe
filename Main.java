@@ -60,7 +60,8 @@ public class Main {
                         String contrasena = sc.nextLine();
                         String contrasenaHash = HashUtil.hashPassword(contrasena);
 
-                        usuarioController.registrarUsuario(id, nombre, correo, contrasenaHash);
+                        Usuario nuevoUsuario = usuarioController.registrarUsuario(id, nombre, correo, contrasenaHash);
+
                         System.out.println("¡Registro exitoso!\n");
                         System.out.println("Detalles del usuario:");
                         System.out.println("ID: " + id);
@@ -73,6 +74,16 @@ public class Main {
                             "nuevo_usuario"
                         );
                         mensajeController.mostrarMensaje(mensajeBienvenida);
+
+                        // === NUEVO: Pide preferencias y crea metas personalizadas ===
+                        System.out.println("\nAntes de continuar, configura tus preferencias:");
+                        PreferenciasUsuario preferencias = registrarPreferencias(sc);
+                        nuevoUsuario.setPreferencias(preferencias);
+
+                        metaController.crearMetasPorPreferencias(nuevoUsuario.getId());
+
+                        System.out.println("Metas asignadas según tus preferencias \n");
+
                     } catch (Exception e){
                         System.out.println("Error al registrar usuario: " + e.getMessage());
                     }
@@ -121,6 +132,45 @@ public class Main {
                     System.out.println("Opción inválida. Intente de nuevo.\n");
             }
         }while(opcion != 3);
+    }
+
+    private static PreferenciasUsuario registrarPreferencias(Scanner sc) {
+        System.out.println("=== CONFIGURA TUS PREFERENCIAS ===");
+
+        System.out.print("Tipo de café preferido: ");
+        String tipoCafe = sc.nextLine();
+
+        System.out.print("Tamaño de taza preferido (pequeña, mediana, grande): ");
+        String tamanoTaza = sc.nextLine();
+
+        System.out.print("¿Usas azúcar? (si/no): ");
+        boolean usaAzucar = sc.nextLine().equalsIgnoreCase("si");
+        String tipoAzucar = "";
+        if (usaAzucar) {
+            System.out.print("Tipo de azúcar (blanca, morena, stevia...): ");
+            tipoAzucar = sc.nextLine();
+        }
+
+        System.out.print("¿Usas leche? (si/no): ");
+        boolean usaLeche = sc.nextLine().equalsIgnoreCase("si");
+        String tipoLeche = "";
+        if (usaLeche) {
+            System.out.print("Tipo de leche (entera, descremada, vegetal...): ");
+            tipoLeche = sc.nextLine();
+        }
+
+        System.out.print("Menciona tus retos preferidos (separados por comas): ");
+        String[] retos = sc.nextLine().split(",");
+
+        return new PreferenciasUsuario(
+                tipoCafe,
+                tamanoTaza,
+                usaAzucar,
+                tipoAzucar,
+                usaLeche,
+                tipoLeche,
+                retos
+        );
     }
 
     public static void mostrarMenuUsuario(Scanner sc, Usuario usuarioActual) {

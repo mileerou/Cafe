@@ -78,6 +78,75 @@ public class MetaController{
             mensajeController.mostrarMensaje(logroEspecial);
         }
     }
+
+    public void crearMetasPorPreferencias(String usuarioId) {
+        Usuario usuario = usuarioController.buscarUsuarioPorId(usuarioId);
+        if (usuario == null) {
+            System.out.println("Usuario no encontrado.");
+            return;
+        }
+
+        PreferenciasUsuario prefs = usuario.getPreferencias();
+        if (prefs == null) {
+            System.out.println("No tienes preferencias guardadas. Configúralas primero.");
+            return;
+        }
+
+        ArrayList<Meta> metas = new ArrayList<>();
+
+        // según tipo de café
+        if (prefs.getTipoCafe().equalsIgnoreCase("americano")) {
+            metas.add(new Meta("1", "Preparar un café americano perfecto durante 3 días seguidos", 50));
+        } else if (prefs.getTipoCafe().equalsIgnoreCase("capuchino")) {
+            metas.add(new Meta("2", "Tomar un capuchino sin azúcar durante 5 días", 60));
+        }
+
+        // Según uso de azúcar
+        if (prefs.isUsaAzucar()) {
+            metas.add(new Meta("3", "Reducir el azúcar a la mitad durante una semana", 70));
+        } else {
+            metas.add(new Meta("4", "Mantenerte sin azúcar por 7 días", 80));
+        }
+
+        // Según uso de leche
+        if (prefs.isUsaLeche()) {
+            metas.add(new Meta("5", "Probar leche vegetal durante 3 días", 50));
+        }
+
+        // Según retos preferidos
+        String[] retos = prefs.getRetosPreferidos();
+        for (String reto : retos) {
+            switch (reto.toLowerCase()) {
+                case "energía":
+                    metas.add(new Meta("6", "Dormir 8 horas diarias por una semana", 90));
+                    break;
+                case "salud":
+                    metas.add(new Meta("7", "Tomar 2 litros de agua cada día durante 5 días", 60));
+                    break;
+                case "actividad física":
+                    metas.add(new Meta("8", "Caminar 8,000 pasos diarios durante 7 días", 100));
+                    break;
+                case "productividad":
+                    metas.add(new Meta("9", "Leer 20 minutos al día durante 5 días", 70));
+                    break;
+            }
+        }
+
+        // Evitar duplicados si el usuario ya tiene metas
+        if (!usuario.getMetas().isEmpty()) {
+            System.out.println("Ya tienes metas asignadas.");
+            return;
+        }
+
+        // Asignar metas al usuario
+        for (Meta meta : metas) {
+            usuario.agregarMeta(meta);
+        }
+
+        System.out.println("\n ¡Metas personalizadas creadas según tus preferencias!");
+    }
+//
+
     public void obtenerMetas(String usuarioId){
         Usuario usuario = usuarioController.buscarUsuarioPorId(usuarioId);
         if (usuario == null) {

@@ -12,7 +12,7 @@ public class UsuarioController {
         return usuario.isPrimerLogin();
     }
 
-    public void registrarUsuario(String id, String nombre, String coreo, String contrasenaHash) throws Exception{
+    public Usuario registrarUsuario(String id, String nombre, String coreo, String contrasenaHash) throws Exception{
         Optional<Usuario> existente = usuarios.stream()
             .filter(u -> u.getCorreo().equals(coreo))
             .findFirst();
@@ -20,7 +20,9 @@ public class UsuarioController {
         if (existente.isPresent()){
             throw new Exception("El correo ya está registrado.");
         }
-        usuarios.add(new Usuario(id, nombre, coreo, contrasenaHash));
+        Usuario nuevoUsuario = new Usuario(id, nombre, coreo, contrasenaHash);
+        usuarios.add(nuevoUsuario);
+        return nuevoUsuario;
     }
 
     public Usuario login (String correo, String contrasenaHash) throws Exception {

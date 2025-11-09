@@ -73,7 +73,6 @@ public class Main {
                             "nuevo_usuario"
                         );
                         mensajeController.mostrarMensaje(mensajeBienvenida);
-                        metaController.crearMetasIniciales(id);
                     } catch (Exception e){
                         System.out.println("Error al registrar usuario: " + e.getMessage());
                     }
@@ -96,6 +95,7 @@ public class Main {
                         usuarioActual = usuarioController.login(correoLogin, contraseñaLoginHash);
                         if(usuarioActual != null){
                             if(usuarioActual.isPrimerLogin()) {
+                                System.out.println("¡Bienvenido por primera vez, " + usuarioActual.getNombre() + "!");
                                 usuarioActual.setPrimerLogin(false);
                             }
                             System.out.println("¡Inicio de sesión exitoso! Bienvenido, " + usuarioActual.getNombre() + ".\n");
@@ -143,7 +143,8 @@ public class Main {
             System.out.println("8. Ver tienda de premios");
             System.out.println("9. Ver mis metas");
             System.out.println("10. Completar una meta");
-            System.out.println("11. Cerrar sesión");
+            System.out.println("11. Ver historial de canjes");
+            System.out.println("12. Cerrar sesión");
             System.out.print("Elige una opción: ");
             String input = sc.nextLine();
             try {
@@ -401,7 +402,24 @@ public class Main {
                     metaController.completarMeta(usuarioActual.getId(), metaId);
 
                     break;
+
                 case 11:
+                    System.out.println("\n===== HISTORIAL DE CANJES =====");
+                    ArrayList<Canje> historialCanjes = premioController.obtenerHistorialCanjes(usuarioActual.getId());
+                    if (historialCanjes.isEmpty()) {
+                        System.out.println("No has canjeado ningún premio aún.\n");
+                    } else {
+                        for (Canje c : historialCanjes) {
+                            System.out.println("╔══════════════════════════════════╗");
+                            System.out.printf("║ Fecha del canje: %-16s ║\n", c.getFechaCanje());
+                            System.out.printf("║ Premio: %-23s ║\n", c.getPremioNombre());
+                            System.out.printf("║ Puntos usados: %-17d ║\n", c.getPuntosUsados());
+                            System.out.println("╚══════════════════════════════════╝\n");
+                        }
+                    }
+                    break;
+
+                case 12:
                     System.out.println("Cerrando sesión...\n");
                      MensajeMotivacional mensajeDespedida = mensajeController.generarMensaje(
                         "¡Hasta pronto, " + usuarioActual.getNombre() + "! Recuerda: cada día es una oportunidad para mejorar 🌟",
@@ -412,10 +430,11 @@ public class Main {
 
                     usuarioActual = null;
                     break;
+
                 default:
                     System.out.println("Opción inválida. Intente de nuevo.\n");
             }
-        } while (opcion != 11);
+        } while (opcion != 12);
     }
 
     

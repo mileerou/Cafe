@@ -5,7 +5,7 @@ import java.util.UUID;
 public class PremioController {
 
     private ArrayList<Premio> premios;
-    provate ArrayList<Canje> historialCanjes;
+    private ArrayList<Canje> historialCanjes;
 
     public PremioController() {
         premios = new ArrayList<>();

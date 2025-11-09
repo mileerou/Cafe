@@ -11,10 +11,10 @@ public class Usuario {
     private int puntos;
     private ArrayList<Consumo> consumos;
     private ArrayList<Meta> metas;
-
+    private ArrayList<Premio> premiosCanjeados;
     private ArrayList<Canje> historialCanjes;
-
     private boolean primerLogin;
+    
     public Usuario(String id, String nombre, String correo, String contrasenaHash) {
         this.id = id;
         this.nombre = nombre;
@@ -25,6 +25,7 @@ public class Usuario {
         this.puntos = 0;
         this.consumos = new ArrayList<>();
         this.metas = new ArrayList<>();
+        this.historialCanjes = new ArrayList<>();
         this.premiosCanjeados = new ArrayList<>();
         this.primerLogin = true;
     }
@@ -69,6 +70,10 @@ public class Usuario {
 
     public ArrayList<Premio> getPremiosCanjeados() {
         return premiosCanjeados;
+    }
+
+     public ArrayList<Canje> getHistorialCanjes() { 
+        return historialCanjes;
     }
     
     public boolean isPrimerLogin() {

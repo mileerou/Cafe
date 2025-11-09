@@ -11,7 +11,9 @@ public class Usuario {
     private int puntos;
     private ArrayList<Consumo> consumos;
     private ArrayList<Meta> metas;
-    private ArrayList<Premio> premiosCanjeados;
+
+    private ArrayList<Canje> historialCanjes;
+
     private boolean primerLogin;
     public Usuario(String id, String nombre, String correo, String contrasenaHash) {
         this.id = id;
@@ -118,6 +120,24 @@ public class Usuario {
     public void setContrasenaHash(String contrasenaHash) {
         this.contrasenaHash = contrasenaHash;
     }
+
+    //método canje
+    public void agregarCanje(Canje canje) {
+    this.historialCanjes.add(canje);
+    }
+
+    public void mostrarHistorialCanjes() {
+        if (historialCanjes.isEmpty()) {
+            System.out.println(" No has canjeado ningún premio todavía.\n");
+        } else {
+            System.out.println(" Historial de Canjes:");
+            for (int i = 0; i < historialCanjes.size(); i++) {
+                System.out.println((i + 1) + ". " + historialCanjes.get(i));
+            }
+            System.out.println();
+        }
+    }
+
 
     @Override
     public String toString() {

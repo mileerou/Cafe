@@ -3,6 +3,7 @@ import java.util.Date;
 import java.util.UUID;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.text.SimpleDateFormat;
 
 public class Main {
     private static UsuarioController usuarioController = new UsuarioController();
@@ -170,7 +171,7 @@ public class Main {
             System.out.println(" (   ) (   )  ");
             System.out.println("  ^^    ^^   ");
             System.out.println("1. Registrar consumo diario de café");
-            System.out.println("2. Ver historial de consumo");
+            System.out.println("2. Reportes de consumo (con filtros)");
             System.out.println("3. Configurar preferencias");
             System.out.println("4. Ver mis preferencias");
             System.out.println("5. Ver mis puntos");
@@ -272,36 +273,110 @@ public class Main {
                 break;
 
                 case 2:
-                    ConsumoController consumoController = new ConsumoController(usuarioActual);
-                    ArrayList<Consumo> historial = consumoController.obtenerHistorialConsumo();
-                    if (historial.isEmpty()) {
-                        System.out.println("No hay consumos registrados.\n");
-                    } else {
-                        System.out.println("======= HISTORIAL DE CONSUMOS =======");
-                        for (Consumo consumo : historial) {
-                            System.out.println("╔══════════════════════════════════╗");
-                            System.out.println("║   ☕  Registro de Consumo        ║");
-                            System.out.println("╠══════════════════════════════════╣");
-                            System.out.printf("║ Fecha: %-24s ║\n", consumo.getFecha());
-                            System.out.printf("║ Tamaño de taza: %-16s ║\n", consumo.getTamañoTaza());
-                            System.out.printf("║ Tipo de azúcar: %-16s ║\n", consumo.getTipoAzucar());
-                            System.out.printf("║ Tipo de leche: %-16s ║\n", consumo.getTipoLeche());
-                            System.out.printf("║ Tipo de café: %-17s ║\n", consumo.getTipoCafe());
-                            System.out.printf("║ Extra: %-24s ║\n", consumo.getRespuestasExtras());
-                            System.out.println("╚══════════════════════════════════╝\n");
+                    // Submenú de reportes con filtros
+                    System.out.println("\n===== REPORTES DE CONSUMO =====");
+                    System.out.println("1. Ver todo el historial");
+                    System.out.println("2. Filtrar por fecha específica");
+                    System.out.println("3. Filtrar por rango de fechas");
+                    System.out.println("4. Filtrar por tipo de café");
+                    System.out.println("5. Filtrar por tamaño de taza");
+                    System.out.print("Elige una opción: ");
+                    
+                    try {
+                        int opcionReporte = Integer.parseInt(sc.nextLine());
+                        ConsumoController consumoController = new ConsumoController(usuarioActual);
+                        ArrayList<Consumo> consumosFiltrados = new ArrayList<>();
+                        
+                        switch (opcionReporte) {
+                            case 1:
+                                // Ver todo el historial (comportamiento original)
+                                consumosFiltrados = consumoController.obtenerHistorialConsumo();
+                                break;
+                                
+                            case 2:
+                                // Filtrar por fecha específica
+                                System.out.print("Ingresa la fecha (dd/MM/yyyy): ");
+                                String fechaStr = sc.nextLine();
+                                try {
+                                    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+                                    Date fecha = sdf.parse(fechaStr);
+                                    consumosFiltrados = consumoController.obtenerPorFecha(fecha);
+                                } catch (Exception e) {
+                                    System.out.println("Formato de fecha inválido. Usa dd/MM/yyyy");
+                                    break;
+                                }
+                                break;
+                                
+                            case 3:
+                                // Filtrar por rango de fechas
+                                System.out.print("Fecha inicio (dd/MM/yyyy): ");
+                                String inicioStr = sc.nextLine();
+                                System.out.print("Fecha fin (dd/MM/yyyy): ");
+                                String finStr = sc.nextLine();
+                                try {
+                                    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+                                    Date inicio = sdf.parse(inicioStr);
+                                    Date fin = sdf.parse(finStr);
+                                    consumosFiltrados = consumoController.obtenerPorRangoFechas(inicio, fin);
+                                } catch (Exception e) {
+                                    System.out.println("Formato de fecha inválido. Usa dd/MM/yyyy");
+                                    break;
+                                }
+                                break;
+                                
+                            case 4:
+                                // Filtrar por tipo de café
+                                System.out.print("Ingresa el tipo de café: ");
+                                String tipoCafe = sc.nextLine();
+                                consumosFiltrados = consumoController.obtenerPorTipoCafe(tipoCafe);
+                                break;
+                                
+                            case 5:
+                                // Filtrar por tamaño de taza
+                                System.out.print("Ingresa el tamaño de taza: ");
+                                String tamanoTaza = sc.nextLine();
+                                consumosFiltrados = consumoController.obtenerPorTamanoTaza(tamanoTaza);
+                                break;
+                                
+                            default:
+                                System.out.println("Opción inválida.");
+                                break;
                         }
-
-                        if (historial.size() >= 7) {
-                            MensajeMotivacional mensaje = mensajeController.generarMensaje(
-                                "¡Llevas " + historial.size() + " registros! Tu constancia es admirable 📈",
-                                "progreso",
-                                "consumos >= 7"
-                            );
-                            mensajeController.mostrarMensaje(mensaje);
+                        
+                        // Mostrar resultados filtrados
+                        if (consumosFiltrados.isEmpty()) {
+                            System.out.println("No hay consumos que coincidan con los criterios.\n");
+                        } else {
+                            System.out.println("\n======= CONSUMOS FILTRADOS =======");
+                            SimpleDateFormat formatoFecha = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+                            for (Consumo consumo : consumosFiltrados) {
+                                System.out.println("╔══════════════════════════════════╗");
+                                System.out.println("║   ☕  Registro de Consumo        ║");
+                                System.out.println("╠══════════════════════════════════╣");
+                                System.out.printf("║ Fecha: %-24s ║\n", formatoFecha.format(consumo.getFecha()));
+                                System.out.printf("║ Tamaño de taza: %-16s ║\n", consumo.getTamañoTaza());
+                                System.out.printf("║ Tipo de azúcar: %-16s ║\n", consumo.getTipoAzucar());
+                                System.out.printf("║ Tipo de leche: %-16s ║\n", consumo.getTipoLeche());
+                                System.out.printf("║ Tipo de café: %-17s ║\n", consumo.getTipoCafe());
+                                System.out.printf("║ Extra: %-24s ║\n", consumo.getRespuestasExtras());
+                                System.out.println("╚══════════════════════════════════╝\n");
+                            }
+                            
+                            // Mensaje motivacional solo para el caso de ver todo el historial
+                            if (opcionReporte == 1 && consumosFiltrados.size() >= 7) {
+                                MensajeMotivacional mensaje = mensajeController.generarMensaje(
+                                    "¡Llevas " + consumosFiltrados.size() + " registros! Tu constancia es admirable 📈",
+                                    "progreso",
+                                    "consumos >= 7"
+                                );
+                                mensajeController.mostrarMensaje(mensaje);
+                            }
                         }
-
+                        
+                    } catch (NumberFormatException e) {
+                        System.out.println("Por favor, ingresa un número válido.");
                     }
-                break;
+                    break;
 
                 case 3:
                     // Formulario de preferencias
@@ -372,7 +447,7 @@ public class Main {
                 case 6:
                     // Modificar consumo de hoy
                     ConsumoController consumoControllerMod = new ConsumoController(usuarioActual);
-                    historial = consumoControllerMod.obtenerHistorialConsumo();
+                    ArrayList<Consumo> historial = consumoControllerMod.obtenerHistorialConsumo();
                     
                     if (historial.isEmpty()) {
                         System.out.println("No hay consumo registrado hoy para modificar.\n");

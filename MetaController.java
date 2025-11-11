@@ -43,6 +43,10 @@ public class MetaController{
         // Sumar puntos al usuario
         int puntosGanados = metaEncontrada.getPuntosObjetivo();
         usuarioController.sumarPuntos(usuario, puntosGanados);
+        
+        // NUEVO: Registrar puntos ganados
+        usuario.registrarPuntosGanados(puntosGanados, "meta", 
+            "Meta completada: " + metaEncontrada.getDescripcion());
 
         System.out.println("\n╔══════════════════════════════════════════════════════════╗");
         System.out.println("║            ¡META COMPLETADA!                               ║");
@@ -50,6 +54,7 @@ public class MetaController{
         System.out.printf("║  %s\n", ajustarTexto(metaEncontrada.getDescripcion(), 54));
         System.out.printf("║  Puntos ganados: %-39d ║\n", puntosGanados);
         System.out.printf("║  Total de puntos: %-38d ║\n", usuario.getPuntos());
+        System.out.printf("║  Puntos totales ganados: %-31d ║\n", usuario.getPuntosTotalesGanados());
         System.out.println("╚══════════════════════════════════════════════════════════╝\n");
 
         // Mostrar mensaje motivacional de meta completada
@@ -146,7 +151,6 @@ public class MetaController{
         System.out.println("\n ¡Metas personalizadas creadas según tus preferencias!");
     }
 //
-
     public void obtenerMetas(String usuarioId){
         Usuario usuario = usuarioController.buscarUsuarioPorId(usuarioId);
         if (usuario == null) {

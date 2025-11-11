@@ -17,6 +17,12 @@ public class ConsumoController {
             Consumo nuevoConsumo = new Consumo(fecha, tamanoTaza, tipoAzucar, tipoLeche, tipoCafe, respuestasExtras);
             consumos.add(nuevoConsumo);
             usuario.agregarConsumo(nuevoConsumo);
+            
+            // NUEVO: Registrar puntos por consumo
+            int puntosPorConsumo = 10; // 10 puntos por cada consumo registrado
+            usuario.registrarPuntosGanados(puntosPorConsumo, "consumo", 
+                "Registro de consumo: " + tipoCafe + " (" + tamanoTaza + "oz)");
+                
         } catch (Exception e) {
             throw new RuntimeException("Error al guardar el consumo diario: " + e.getMessage());
         }

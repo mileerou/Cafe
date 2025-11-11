@@ -174,14 +174,15 @@ public class Main {
             System.out.println("2. Reportes de consumo (con filtros)");
             System.out.println("3. Configurar preferencias");
             System.out.println("4. Ver mis preferencias");
-            System.out.println("5. Ver mis puntos");
-            System.out.println("6. Modificar un campo de mi consumo de hoy");
-            System.out.println("7. Actualizar usuario");
-            System.out.println("8. Ver tienda de premios");
-            System.out.println("9. Ver mis metas");
-            System.out.println("10. Completar una meta");
-            System.out.println("11. Ver historial de canjes");
-            System.out.println("12. Cerrar sesión");
+            System.out.println("5. Ver mis puntos actuales");
+            System.out.println("6. Ver mis puntos totales ganados"); // NUEVA OPCIÓN
+            System.out.println("7. Modificar un campo de mi consumo de hoy");
+            System.out.println("8. Actualizar usuario");
+            System.out.println("9. Ver tienda de premios");
+            System.out.println("10. Ver mis metas");
+            System.out.println("11. Completar una meta");
+            System.out.println("12. Ver historial de canjes");
+            System.out.println("13. Cerrar sesión");
             System.out.print("Elige una opción: ");
             String input = sc.nextLine();
             try {
@@ -439,12 +440,19 @@ public class Main {
                 break;
 
                 case 5: 
-                    // Ver puntos
-                    System.out.println("\n===== TUS PUNTOS =====");
-                    System.out.println("Puntos acumulados: " + usuarioActual.getPuntos() + " puntos\n");
+                    // Ver puntos actuales
+                    System.out.println("\n===== TUS PUNTOS ACTUALES =====");
+                    System.out.println("Puntos disponibles: " + usuarioActual.getPuntos() + " puntos");
+                    System.out.println("Puntos totales ganados: " + usuarioActual.getPuntosTotalesGanados() + " puntos");
+                    System.out.println("Puntos canjeados: " + (usuarioActual.getPuntosTotalesGanados() - usuarioActual.getPuntos()) + " puntos\n");
                 break;
 
                 case 6:
+                    // NUEVO: Ver puntos totales ganados con historial
+                    usuarioActual.mostrarHistorialPuntos();
+                break;
+
+                case 7:
                     // Modificar consumo de hoy
                     ConsumoController consumoControllerMod = new ConsumoController(usuarioActual);
                     ArrayList<Consumo> historial = consumoControllerMod.obtenerHistorialConsumo();
@@ -532,7 +540,7 @@ public class Main {
                     System.out.println();
                 break;
 
-                case 7:
+                case 8:
                     System.out.println("\n===== ACTUALIZAR USUARIO =====");
                     System.out.print("Nuevo nombre (dejar en blanco para no cambiar): ");
                     String nuevoNombre = sc.nextLine();
@@ -553,7 +561,7 @@ public class Main {
 
                 break;
 
-                case 8:
+                case 9:
                     System.out.println("\n===== TIENDA DE PREMIOS =====");
                     for (Premio premio : catalogo) {
                         System.out.println("ID: " + premio.getId());
@@ -584,10 +592,10 @@ public class Main {
                         }
                     }
                 break;
-                case 9:
+                case 10:
                     metaController.obtenerMetas(usuarioActual.getId());
                     break;
-                case 10:
+                case 11:
                     System.out.println("\n===== COMPLETAR META =====");
                     
                     ArrayList<Meta> metasUsuario = usuarioActual.getMetas();
@@ -618,7 +626,7 @@ public class Main {
 
                     break;
 
-                case 11:
+                case 12:
                     System.out.println("\n===== HISTORIAL DE CANJES =====");
                     ArrayList<Canje> historialCanjes = premioController.obtenerHistorialCanjes(usuarioActual.getId());
                     if (historialCanjes.isEmpty()) {
@@ -634,7 +642,7 @@ public class Main {
                     }
                     break;
 
-                case 12:
+                case 13:
                     System.out.println("Cerrando sesión...\n");
                      MensajeMotivacional mensajeDespedida = mensajeController.generarMensaje(
                         "¡Hasta pronto, " + usuarioActual.getNombre() + "! Recuerda: cada día es una oportunidad para mejorar 🌟",
@@ -649,7 +657,7 @@ public class Main {
                 default:
                     System.out.println("Opción inválida. Intente de nuevo.\n");
             }
-        } while (opcion != 12);
+        } while (opcion != 13);
     }
 
     

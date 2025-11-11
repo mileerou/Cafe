@@ -1,5 +1,6 @@
 import java.util.Date;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Usuario {
     private String id;
@@ -15,6 +16,10 @@ public class Usuario {
     private ArrayList<Canje> historialCanjes;
     private boolean primerLogin;
     
+    // NUEVO: Registro de puntos ganados
+    private int puntosTotalesGanados;
+    private ArrayList<HashMap<String, Object>> historialPuntos;
+    
     public Usuario(String id, String nombre, String correo, String contrasenaHash) {
         this.id = id;
         this.nombre = nombre;
@@ -28,6 +33,10 @@ public class Usuario {
         this.historialCanjes = new ArrayList<>();
         this.premiosCanjeados = new ArrayList<>();
         this.primerLogin = true;
+        
+        // NUEVO: Inicializar registro de puntos
+        this.puntosTotalesGanados = 0;
+        this.historialPuntos = new ArrayList<>();
     }
 
     // Getters
@@ -78,6 +87,15 @@ public class Usuario {
     
     public boolean isPrimerLogin() {
         return primerLogin;
+    }
+
+    // NUEVOS Getters para puntos totales
+    public int getPuntosTotalesGanados() {
+        return puntosTotalesGanados;
+    }
+    
+    public ArrayList<HashMap<String, Object>> getHistorialPuntos() {
+        return historialPuntos;
     }
 
     //Setters
@@ -143,6 +161,55 @@ public class Usuario {
         }
     }
 
+    // NUEVO: Método para registrar ganancia de puntos
+    public void registrarPuntosGanados(int puntos, String fuente, String descripcion) {
+        this.puntosTotalesGanados += puntos;
+        
+        HashMap<String, Object> registro = new HashMap<>();
+        registro.put("fecha", new Date());
+        registro.put("puntos", puntos);
+        registro.put("fuente", fuente);
+        registro.put("descripcion", descripcion);
+        registro.put("puntosTotales", this.puntosTotalesGanados);
+        
+        this.historialPuntos.add(registro);
+        
+        System.out.println("✅ +" + puntos + " puntos ganados por: " + descripcion);
+    }
+
+    // NUEVO: Método para mostrar historial de puntos
+    public void mostrarHistorialPuntos() {
+        if (historialPuntos.isEmpty()) {
+            System.out.println(" No has ganado puntos todavía.\n");
+            return;
+        }
+        
+        System.out.println("\n╔════════════════════════════════════════════════════════════╗");
+        System.out.println("║                 HISTORIAL DE PUNTOS GANADOS                ║");
+        System.out.println("╠════════════════════════════════════════════════════════════╣");
+        System.out.printf("║  Puntos totales ganados: %-33d ║\n", puntosTotalesGanados);
+        System.out.println("╠════════════════════════════════════════════════════════════╣");
+        
+        java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("dd/MM/yyyy HH:mm");
+        
+        for (int i = 0; i < historialPuntos.size(); i++) {
+            HashMap<String, Object> registro = historialPuntos.get(i);
+            System.out.printf("║ %2d. %-10s | +%-3d pts | %-25s ║\n", 
+                i + 1,
+                sdf.format(registro.get("fecha")),
+                registro.get("puntos"),
+                truncarTexto(registro.get("descripcion").toString(), 25)
+            );
+        }
+        System.out.println("╚════════════════════════════════════════════════════════════╝\n");
+    }
+    
+    private String truncarTexto(String texto, int longitud) {
+        if (texto.length() <= longitud) {
+            return texto;
+        }
+        return texto.substring(0, longitud - 3) + "...";
+    }
 
     @Override
     public String toString() {

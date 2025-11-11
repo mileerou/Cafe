@@ -36,6 +36,11 @@ public class MensajeController {
         // Mensajes de premios
         mensajesPredefinidos.add(new MensajeMotivacional("msg_011", " ¡Premio canjeado! Disfruta tu recompensa, te lo mereces"));
         mensajesPredefinidos.add(new MensajeMotivacional("msg_012", " ¡Increíble! Has canjeado un premio. Sigue así"));
+
+        // NUEVOS: Mensajes sobre puntos ganados
+        mensajesPredefinidos.add(new MensajeMotivacional("msg_013", " ¡Puntos ganados! Cada registro te acerca a tus premios"));
+        mensajesPredefinidos.add(new MensajeMotivacional("msg_014", " ¡Sigue acumulando puntos! Tus esfuerzos valen la pena"));
+        mensajesPredefinidos.add(new MensajeMotivacional("msg_015", " ¡Cada punto cuenta! Estás construyendo tu recompensa"));
     }
 
     public MensajeMotivacional obtenerMensaje(String usuarioId, UsuarioController usuarioController) {

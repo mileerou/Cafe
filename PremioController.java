@@ -1,11 +1,15 @@
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.UUID;
 
 public class PremioController {
 
     private ArrayList<Premio> premios;
+    private ArrayList<Canje> historialCanjes;
 
     public PremioController() {
         premios = new ArrayList<>();
+        historialCanjes = new ArrayList<>();
     }
 
     // Agregar un premio a la lista
@@ -15,6 +19,29 @@ public class PremioController {
 
     public ArrayList<Premio> getPremios() {
     return premios;}
+
+    //  Registrar canje
+    private void registrarCanje(String usuarioId, Premio premio, int puntosUsados) {
+        Canje nuevoCanje = new Canje(
+            UUID.randomUUID().toString(),
+            usuarioId,
+            premio.getNombre(),
+            new Date(),
+            puntosUsados
+        );
+        historialCanjes.add(nuevoCanje);
+    }
+
+    //Obtener historial de canjes de un usuario
+    public ArrayList<Canje> obtenerHistorialCanjes(String usuarioId) {
+        ArrayList<Canje> canjesUsuario = new ArrayList<>();
+        for (Canje c : historialCanjes) {
+            if (c.getUsuarioId().equals(usuarioId)) {
+                canjesUsuario.add(c);
+            }
+        }
+        return canjesUsuario;
+    }
 
     // Obtener mensajes sobre premios disponibles
     public void mostrarMensajesPremios() {
@@ -53,6 +80,9 @@ public class PremioController {
         // Realizar el canje
         usuario.restarPuntos(premio.getPuntosRequeridos());
         premio.setStock(premio.getStock() - 1);
+
+        // Registrar el canje en el historial
+        registrarCanje(usuario.getId(), premio, premio.getPuntosRequeridos());
 
         return "Has canjeado el premio: " + premio.getNombre() + ". ¡Disfrútalo!";
     }

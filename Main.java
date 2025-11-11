@@ -60,29 +60,15 @@ public class Main {
                         String contrasena = sc.nextLine();
                         String contrasenaHash = HashUtil.hashPassword(contrasena);
 
-                        Usuario nuevoUsuario = usuarioController.registrarUsuario(id, nombre, correo, contrasenaHash);
+                        usuarioController.registrarUsuario(id, nombre, correo, contrasenaHash);
 
-                        System.out.println("¡Registro exitoso!\n");
-                        System.out.println("Detalles del usuario:");
-                        System.out.println("ID: " + id);
-                        System.out.println("Nombre: " + nombre);
-                        System.out.println("Correo: " + correo + "\n");
-                        System.out.println("Contraseña: " + contrasena);
+                        System.out.println("¡Registro exitoso! Bienvenido, " + nombre + ".\n");
                         MensajeMotivacional mensajeBienvenida = mensajeController.generarMensaje(
                             "¡Bienvenido a Movaccino, " + nombre + "! Estamos emocionados de acompañarte en este viaje 🌟",
                             "registro",
                             "nuevo_usuario"
                         );
                         mensajeController.mostrarMensaje(mensajeBienvenida);
-
-                        // === NUEVO: Pide preferencias y crea metas personalizadas ===
-                        System.out.println("\nAntes de continuar, configura tus preferencias:");
-                        PreferenciasUsuario preferencias = registrarPreferencias(sc);
-                        nuevoUsuario.setPreferencias(preferencias);
-
-                        metaController.crearMetasPorPreferencias(nuevoUsuario.getId());
-
-                        System.out.println("Metas asignadas según tus preferencias \n");
 
                     } catch (Exception e){
                         System.out.println("Error al registrar usuario: " + e.getMessage());
@@ -409,17 +395,66 @@ public class Main {
 
                     Consumo consumoSeleccionado = historial.get(opcion - 1);
 
-                    System.out.print("¿Qué campo deseas modificar? (tamanotaza, tipoazucar, tipoleche, tipocafe, respuestasextras): ");
-                    String campo = sc.nextLine();
-                    System.out.print("Nuevo valor: ");
-                    String nuevoValor = sc.nextLine();
+                    // Permitir seleccionar varios campos por número para editar de una sola vez
+                    System.out.println("¿Qué campos deseas modificar? Selecciona los números separados por comas:");
+                    System.out.println("1. Tamaño de taza");
+                    System.out.println("2. Tipo de azúcar");
+                    System.out.println("3. Tipo de leche");
+                    System.out.println("4. Tipo de café");
+                    System.out.println("5. Comentarios extras");
+                    System.out.print("Selecciona (ej: 1,4 para tamaño y tipo de café): ");
+                    String seleccion = sc.nextLine();
 
-                    try {
-                        consumoSeleccionado.actualizarCampo(campo, nuevoValor);
-                        System.out.println("Campo actualizado correctamente.\n");
-                    } catch (IllegalArgumentException e) {
-                        System.out.println(e.getMessage());
+                    String[] partes = seleccion.split(",");
+                    for (String p : partes) {
+                        p = p.trim();
+                        if (p.isEmpty()) continue;
+                        int num;
+                        try {
+                            num = Integer.parseInt(p);
+                        } catch (NumberFormatException nfe) {
+                            System.out.println("Opción inválida: " + p + " (no es un número). Se omite.");
+                            continue;
+                        }
+
+                        String campoClave;
+                        String etiqueta;
+                        switch (num) {
+                            case 1:
+                                campoClave = "tamanotaza";
+                                etiqueta = "Tamaño de taza (Oz)";
+                                break;
+                            case 2:
+                                campoClave = "tipoazucar";
+                                etiqueta = "Tipo de azúcar";
+                                break;
+                            case 3:
+                                campoClave = "tipoleche";
+                                etiqueta = "Tipo de leche";
+                                break;
+                            case 4:
+                                campoClave = "tipocafe";
+                                etiqueta = "Tipo de café";
+                                break;
+                            case 5:
+                                campoClave = "respuestasextras";
+                                etiqueta = "Comentarios extras";
+                                break;
+                            default:
+                                System.out.println("Opción inválida: " + num + ". Se omite.");
+                                continue;
+                        }
+
+                        System.out.print("Nuevo valor para " + etiqueta + ": ");
+                        String nuevoValor = sc.nextLine();
+                        try {
+                            consumoSeleccionado.actualizarCampo(campoClave, nuevoValor);
+                            System.out.println("Campo '" + etiqueta + "' actualizado correctamente.");
+                        } catch (IllegalArgumentException e) {
+                            System.out.println("No se pudo actualizar '" + etiqueta + "': " + e.getMessage());
+                        }
                     }
+                    System.out.println();
                 break;
 
                 case 7:

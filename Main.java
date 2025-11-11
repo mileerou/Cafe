@@ -155,22 +155,74 @@ public class Main {
             switch (opcion) {
                 case 1:
                     try {
-                        Date fecha = new Date();
-                        System.out.print("Tamaño de taza (Oz): ");
-                        String tamanoTaza = sc.nextLine();
-                        System.out.print("Tipo de azúcar: ");
-                        String tipoAzucar = sc.nextLine();
-                        System.out.print("Tipo de leche: ");
-                        String tipoLeche = sc.nextLine();
-                        System.out.print("Tipo de café: ");
-                        String tipoCafe = sc.nextLine();
-                        System.out.print("¿Algún comentario extra? ");
-                        String respuestasExtras = sc.nextLine();
+                        System.out.println("¿Deseas usar tus preferencias habituales?");
+                        System.out.println("1. Sí (registrar según preferencias)");
+                        System.out.println("2. No (ingresar un café diferente)");
+                        System.out.print("Selecciona una opción: ");
+                        int subOpcion = Integer.parseInt(sc.nextLine());
 
+                        Date fecha = new Date();
+                        String tamanoTaza = "", tipoAzucar = "", tipoLeche = "", tipoCafe = "", respuestasExtras = "";
+
+                        if (subOpcion == 1) {
+                            // Usar preferencias guardadas
+                            PreferenciasUsuario pref = usuarioActual.getPreferencias();
+
+                            if (pref == null) {
+                                System.out.println("\nNo tienes preferencias guardadas. Debes configurarlas primero.\n");
+                                break;
+                            }
+
+                            // Validar que las preferencias tengan datos
+                            if (pref.getTipoCafe() == null || pref.getTipoCafe().isEmpty() ||
+                                pref.getTamañoTaza() == null || pref.getTamañoTaza().isEmpty()) {
+                                System.out.println("\nTus preferencias están incompletas. Configúralas antes de usar esta opción.\n");
+                                break; 
+                            }
+
+                            tamanoTaza = pref.getTamañoTaza();
+                            tipoAzucar = pref.getTipoAzucar();
+                            tipoLeche = pref.getTipoLeche();
+                            tipoCafe = pref.getTipoCafe();
+                            respuestasExtras = "Consumo habitual";
+
+                            System.out.println("\n☕ Se ha registrado tu consumo habitual.");
+                        } 
+                        else if (subOpcion == 2) {
+                            // Ingreso manual (consumo especial)
+                            System.out.print("Tamaño de taza (Oz): ");
+                            tamanoTaza = sc.nextLine();
+
+                            System.out.print("Tipo de azúcar: ");
+                            tipoAzucar = sc.nextLine();
+
+                            System.out.print("Tipo de leche: ");
+                            tipoLeche = sc.nextLine();
+
+                            System.out.print("Tipo de café: ");
+                            tipoCafe = sc.nextLine();
+
+                            System.out.print("¿Algún comentario extra? ");
+                            respuestasExtras = sc.nextLine();
+
+                            System.out.println("\n☕ Se ha registrado tu consumo especial.");
+                        } 
+                        else {
+                            System.out.println("Opción inválida.");
+                            break; // volver al menú principal
+                        }
+
+                        // Validación final antes de guardar
+                        if (tamanoTaza.isEmpty() || tipoCafe.isEmpty()) {
+                            System.out.println("\n⚠️ Error: no se registró el consumo porque faltan datos.\n");
+                            break;
+                        }
+
+                        // Guardar el consumo
                         ConsumoController consumoController = new ConsumoController(usuarioActual);
                         consumoController.guardarConsumoDiario(fecha, tamanoTaza, tipoAzucar, tipoLeche, tipoCafe, respuestasExtras);
 
-                        System.out.println("¡Consumo registrado exitosamente!\n");
+                        System.out.println("✅ ¡Consumo registrado exitosamente!\n");
 
                         mensajeController.mostrarMensaje(
                             mensajeController.obtenerMensajeRegistroConsumo()
@@ -243,6 +295,9 @@ public class Main {
                     }
                     PreferenciasUsuario preferencias = new PreferenciasUsuario(tipoCafe, tamanoTaza, usaAzucar, tipoAzucar, usaLeche, tipoLeche, retosList.toArray(new String[0]));
                     preferenciasController.crearPreferencias(preferencias);
+                    
+                    usuarioActual.setPreferencias(preferencias);
+                    
                     MensajeMotivacional mensajePref = mensajeController.generarMensaje(
                         "¡Preferencias guardadas! Conocerte mejor nos ayuda a brindarte una mejor experiencia 🎯",
                         "preferencias",
@@ -253,7 +308,7 @@ public class Main {
                 break;
 
                 case 4:
-                    // Ver preferencias
+                // Ver preferencias
                     System.out.println("\n===== TUS PREFERENCIAS =====");
                     PreferenciasUsuario pref = preferenciasController.obtenerPreferencias();
                     if (pref != null) {

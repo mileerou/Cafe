@@ -101,4 +101,12 @@ public class PreferenciasUsuario implements Serializable{
                "Tipo de leche: " + tipoLeche + "\n" +
                "Retos preferidos: " + (retosPreferidos.length > 0 ? String.join(", ", retosPreferidos) : "Ninguno");
     }
+
+    public boolean tienePreferencias() {
+        return (tipoCafe != null && !tipoCafe.trim().isEmpty())
+            || (tamanoTaza != null && !tamanoTaza.trim().isEmpty())
+            || usaAzucar
+            || usaLeche
+            || (retosPreferidos != null && retosPreferidos.length > 0);
+    }
 }

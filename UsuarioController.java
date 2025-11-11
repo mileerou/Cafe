@@ -70,12 +70,10 @@ public class UsuarioController {
             throw new RuntimeException("Usuario no proporcionado.");
         }
 
-        // Actualizar nombre si se proporcionó
         if (nuevoNombre != null && !nuevoNombre.trim().isEmpty()) {
             usuarioActual.setNombre(nuevoNombre);
         }
 
-        // Actualizar correo si se proporcionó y no está en uso por otro usuario
         if (nuevoCorreo != null && !nuevoCorreo.trim().isEmpty() && !nuevoCorreo.equals(usuarioActual.getCorreo())) {
             Optional<Usuario> existente = usuarios.stream()
                 .filter(u -> u.getCorreo().equals(nuevoCorreo) && !u.getId().equals(usuarioActual.getId()))
@@ -86,7 +84,6 @@ public class UsuarioController {
             usuarioActual.setCorreo(nuevoCorreo);
         }
 
-        // Actualizar contraseña si se proporcionó
         if (nuevaContrasenaHash != null && !nuevaContrasenaHash.trim().isEmpty()) {
             usuarioActual.setContrasenaHash(nuevaContrasenaHash);
         }

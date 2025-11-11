@@ -69,13 +69,11 @@ public class Consumo {
         this.respuestasExtras = respuestasExtras;
     }
 
-    // metodo para actualizar un campo especifico
-    // Aca esta el metodo
     /**
      * Permite actualizar un campo específico del consumo si el usuario se equivocó.
-     * @param campo El nombre del campo a actualizar (por ejemplo: "tipoLeche")
-     * @param nuevoValor El nuevo valor para ese campo
-     * @throws IllegalArgumentException si el campo no es válido
+     * @param campo
+     * @param nuevoValor
+     * @throws IllegalArgumentException
      */
     public void actualizarCampo(String campo, String nuevoValor) {
         String campoNormalizado = campo.toLowerCase();

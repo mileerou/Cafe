@@ -19,6 +19,7 @@ public class MetaDAO {
                     .append("usuarioId", usuarioId)
                     .append("descripcion", meta.getDescripcion())
                     .append("puntosObjetivo", meta.getPuntosObjetivo())
+                    .append("puntosActuales", meta.getPuntosActuales())
                     .append("completada", meta.isCompletada());
             collection.insertOne(doc);
         } catch (Exception e) {
@@ -35,6 +36,7 @@ public class MetaDAO {
                     doc.getString("descripcion"),
                     doc.getInteger("puntosObjetivo", 0)
                 );
+                m.setPuntosActuales(doc.getInteger("puntosActuales", 0));
                 m.setCompletada(doc.getBoolean("completada", false));
                 metas.add(m);
             }
@@ -55,6 +57,23 @@ public class MetaDAO {
             );
         } catch (Exception e) {
             throw new RuntimeException("Error al marcar meta completada: " + e.getMessage());
+        }
+    }
+
+    public void actualizarPuntos(String usuarioId, String metaId, int puntosActuales, boolean completada) {
+        try {
+            collection.updateOne(
+                Filters.and(
+                    Filters.eq("usuarioId", usuarioId),
+                    Filters.eq("id", metaId)
+                ),
+                Updates.combine(
+                    Updates.set("puntosActuales", puntosActuales),
+                    Updates.set("completada", completada)
+                )
+            );
+        } catch (Exception e) {
+            throw new RuntimeException("Error al actualizar puntos de la meta: " + e.getMessage());
         }
     }
 }

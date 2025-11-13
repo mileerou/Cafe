@@ -90,6 +90,51 @@ public class MetaController {
         }
     }
 
+    public void actualizarProgresoMeta(String usuarioId, String metaId, int puntosAAgregar) {
+        Usuario usuario = usuarioController.buscarUsuarioPorId(usuarioId);
+        if (usuario == null) {
+            System.out.println("Usuario no encontrado.");
+            return;
+        }
+
+        Meta metaEncontrada = buscarMetaPorId(usuario, metaId);
+        if (metaEncontrada == null) {
+            System.out.println("Meta no encontrada.");
+            return;
+        }
+
+        if (metaEncontrada.isCompletada()) {
+            System.out.println("Esta meta ya está completada.");
+            return;
+        }
+
+        int nuevos = metaEncontrada.getPuntosActuales() + puntosAAgregar;
+        metaEncontrada.setPuntosActuales(nuevos);
+
+        boolean ahoraCompletada = metaEncontrada.isCompletada();
+
+        // Persistir cambios
+        metaDAO.actualizarPuntos(usuarioId, metaId, metaEncontrada.getPuntosActuales(), ahoraCompletada);
+
+        if (ahoraCompletada) {
+            // Si al actualizar se completó, otorgar puntos totales y mostrar mensaje
+            int puntosGanados = metaEncontrada.getPuntosObjetivo();
+            usuario.registrarPuntosGanados(puntosGanados, "meta", "Meta completada: " + metaEncontrada.getDescripcion());
+            usuarioController.sumarPuntosConHistorial(usuario, puntosGanados);
+
+            System.out.println("¡Felicidades! Has completado la meta al alcanzar los puntos objetivo.");
+            MensajeMotivacional mensajeMeta = mensajeController.generarMensaje(
+                "¡Meta completada! " + metaEncontrada.getDescripcion() + ". ¡Sigue así!",
+                "meta_completada",
+                "meta_completada"
+            );
+            mensajeController.mostrarMensaje(mensajeMeta);
+        } else {
+            System.out.printf("Progreso actualizado: %d/%d puntos (%.2f%%)\n",
+                metaEncontrada.getPuntosActuales(), metaEncontrada.getPuntosObjetivo(), metaEncontrada.calcularProgreso());
+        }
+    }
+
     public void crearMetasPorPreferencias(String usuarioId) {
         Usuario usuario = usuarioController.buscarUsuarioPorId(usuarioId);
         if (usuario == null) {
@@ -194,6 +239,7 @@ public class MetaController {
             
             System.out.printf("║ %s [%s] %s\n", icono, meta.getId(), ajustarTexto(meta.getDescripcion(), 47));
             System.out.printf("║    Estado: %-45s ║\n", estado);
+            System.out.printf("║    Progreso: %-6d / %-6d puntos (%5.2f%%)        ║\n", meta.getPuntosActuales(), meta.getPuntosObjetivo(), meta.calcularProgreso());
             System.out.printf("║    Recompensa: %-38d puntos ║\n", meta.getPuntosObjetivo());
             System.out.println("╠══════════════════════════════════════════════════════════╣");
         }

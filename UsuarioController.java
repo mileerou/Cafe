@@ -135,7 +135,19 @@ public class UsuarioController {
 
     // método para mostrar el progreso de una meta
     public void mostrarProgresoMeta(Usuario usuario, String metaId) {
-        ArrayList<Meta> metas = usuario.getMetas();
+        // Reload user to ensure we have fresh meta progress from persistence
+        if (usuario == null) {
+            System.out.println("Usuario no proporcionado.");
+            return;
+        }
+
+        Usuario usuarioRefrescado = buscarUsuarioPorId(usuario.getId());
+        if (usuarioRefrescado == null) {
+            System.out.println("Usuario no encontrado.");
+            return;
+        }
+
+        ArrayList<Meta> metas = usuarioRefrescado.getMetas();
         for (Meta meta : metas) {
             if (meta.getId().equals(metaId)) {
                 double progreso = meta.calcularProgreso();

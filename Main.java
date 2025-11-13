@@ -157,11 +157,12 @@ public class Main {
             System.out.println("7. Modificar un campo de mi consumo de hoy");
             System.out.println("8. Actualizar usuario");
             System.out.println("9. Ver tienda de premios");
-            System.out.println("10. Ver mis metas");
-            System.out.println("11. Completar una meta");
-            System.out.println("12. Ver historial de canjes");
-            System.out.println("13. Ver progreso de una meta");
-            System.out.println("14. Cerrar sesión");
+            System.out.println("10. Asignar metas");
+            System.out.println("11. Ver mis metas");
+            System.out.println("12. Completar una meta");
+            System.out.println("13. Ver historial de canjes");
+            System.out.println("14. Ver progreso de una meta");
+            System.out.println("15. Cerrar sesión");
             System.out.print("Elige una opción: ");
             String input = sc.nextLine();
             try {
@@ -174,9 +175,9 @@ public class Main {
             switch (opcion) {
                 case 1:
                     try {
-                        System.out.println("¿Deseas usar tus preferencias habituales?");
-                        System.out.println("1. Sí (registrar según preferencias)");
-                        System.out.println("2. No (ingresar un café diferente)");
+                        System.out.println("¿Qué deseas registrar?");
+                        System.out.println("1. Registrar consumo habitual (según tus preferencias).");
+                        System.out.println("2. Registrar consumo especial/diferente.");
                         System.out.print("Selecciona una opción: ");
                         int subOpcion = Integer.parseInt(sc.nextLine());
 
@@ -203,7 +204,7 @@ public class Main {
                             tipoCafe = pref.getTipoCafe();
                             respuestasExtras = "Consumo habitual";
 
-                            System.out.println("\n☕ Se ha registrado tu consumo habitual.");
+                            System.out.println("\nSe ha registrado tu consumo habitual.");
                         } else if (subOpcion == 2) {
                             System.out.print("Tamaño de taza (Oz): ");
                             tamanoTaza = sc.nextLine();
@@ -223,14 +224,14 @@ public class Main {
                         }
 
                         if (tamanoTaza.isEmpty() || tipoCafe.isEmpty()) {
-                            System.out.println("\n⚠️ Error: no se registró el consumo porque faltan datos.\n");
+                            System.out.println("\nError: no se registró el consumo porque faltan datos.\n");
                             break;
                         }
 
                         ConsumoController consumoController = new ConsumoController(usuarioActual);
                         consumoController.guardarConsumoDiario(fecha, tamanoTaza, tipoAzucar, tipoLeche, tipoCafe, respuestasExtras);
 
-                        System.out.println("✅ ¡Consumo registrado exitosamente!\n");
+                        System.out.println("¡Consumo registrado exitosamente!\n");
 
                         mensajeController.mostrarMensaje(
                             mensajeController.obtenerMensajeRegistroConsumo()
@@ -372,7 +373,7 @@ public class Main {
                     usuarioActual.setPreferencias(preferencias);
                     
                     MensajeMotivacional mensajePref = mensajeController.generarMensaje(
-                        "¡Preferencias guardadas! Conocerte mejor nos ayuda a brindarte una mejor experiencia 🎯",
+                        "¡Preferencias guardadas! Conocerte mejor nos ayuda a brindarte una mejor experiencia",
                         "preferencias",
                         "preferencias_configuradas"
                     );
@@ -546,12 +547,85 @@ public class Main {
                         }
                     }
                     break;
-                    
+
                 case 10:
-                    metaController.obtenerMetas(usuarioActual.getId());
+                    System.out.println("\n===== ASIGNAR METAS =====");
+                    try {
+                        System.out.println("Elige una opción:");
+                        System.out.println("1. Seleccionar metas predefinidas");
+                        System.out.println("2. Crear meta personalizada");
+                        System.out.print("Opción: ");
+                        String optStr = sc.nextLine();
+                        int opt = Integer.parseInt(optStr);
+
+                        if (opt == 1) {
+                            // Predefined templates (same ideas as in MetaController.crearMetasPorPreferencias)
+                            String[][] plantillas = new String[][] {
+                                {"Preparar un café americano perfecto durante 3 días seguidos", "50"},
+                                {"Tomar un capuchino sin azúcar durante 5 días", "60"},
+                                {"Reducir el azúcar a la mitad durante una semana", "70"},
+                                {"Mantenerte sin azúcar por 7 días", "80"},
+                                {"Probar leche vegetal durante 3 días", "50"},
+                                {"Dormir 8 horas diarias por una semana", "90"},
+                                {"Tomar 2 litros de agua cada día durante 5 días", "60"},
+                                {"Caminar 8,000 pasos diarios durante 7 días", "100"},
+                                {"Leer 20 minutos al día durante 5 días", "70"}
+                            };
+
+                            System.out.println("Metas disponibles:");
+                            for (int i = 0; i < plantillas.length; i++) {
+                                System.out.printf("%d. %s (%s puntos)\n", i + 1, plantillas[i][0], plantillas[i][1]);
+                            }
+                            System.out.print("Selecciona los números de las metas que quieres asignar (ej: 1,3,5): ");
+                            String seleccionMetas = sc.nextLine();
+                            String[] partesMetas = seleccionMetas.split(",");
+                            for (String p : partesMetas) {
+                                p = p.trim();
+                                if (p.isEmpty()) continue;
+                                try {
+                                    int idx = Integer.parseInt(p) - 1;
+                                    if (idx < 0 || idx >= plantillas.length) {
+                                        System.out.println("Opción inválida: " + p + " - se omite.");
+                                        continue;
+                                    }
+                                    String descripcion = plantillas[idx][0];
+                                    int puntos = Integer.parseInt(plantillas[idx][1]);
+                                    String idMeta = java.util.UUID.randomUUID().toString();
+                                    Meta nueva = new Meta(idMeta, descripcion, puntos);
+                                    metaController.asignarMeta(usuarioActual.getId(), nueva);
+                                } catch (NumberFormatException nfe) {
+                                    System.out.println("Entrada inválida: " + p + " - se omite.");
+                                }
+                            }
+                        } else if (opt == 2) {
+                            System.out.print("Descripción de la meta: ");
+                            String desc = sc.nextLine();
+                            System.out.print("Puntos objetivo (número): ");
+                            String ptsStr = sc.nextLine();
+                            int pts;
+                            try {
+                                pts = Integer.parseInt(ptsStr);
+                            } catch (NumberFormatException nfe) {
+                                System.out.println("Puntos inválidos. Cancelando creación de meta.");
+                                break;
+                            }
+                            String idMeta = java.util.UUID.randomUUID().toString();
+                            Meta personalizada = new Meta(idMeta, desc, pts);
+                            metaController.asignarMeta(usuarioActual.getId(), personalizada);
+                        } else {
+                            System.out.println("Opción inválida.");
+                        }
+                    } catch (Exception e) {
+                        System.out.println("Error al asignar metas: " + e.getMessage());
+                    }
+
                     break;
                     
                 case 11:
+                    metaController.obtenerMetas(usuarioActual.getId());
+                    break;
+                    
+                case 12:
                     System.out.println("\n===== COMPLETAR META =====");
                     
                     ArrayList<Meta> metasUsuario = usuarioActual.getMetas();
@@ -574,14 +648,46 @@ public class Main {
                         System.out.printf("%d. [%s] %s - %d puntos\n", 
                             (i + 1), meta.getId(), meta.getDescripcion(), meta.getPuntosObjetivo());
                     }
-                    
-                    System.out.print("\nIngresa el ID de la meta que completaste: ");
-                    String metaId = sc.nextLine();
-                    
-                    metaController.completarMeta(usuarioActual.getId(), metaId);
+                    System.out.println("\n¿Qué deseas hacer?");
+                    System.out.println("1. Marcar una meta como completada");
+                    System.out.println("2. Añadir progreso (puntos parciales) a una meta");
+                    System.out.print("Opción: ");
+                    String accionStr = sc.nextLine();
+                    int accion;
+                    try {
+                        accion = Integer.parseInt(accionStr);
+                    } catch (NumberFormatException e) {
+                        System.out.println("Opción inválida.");
+                        break;
+                    }
+
+                    if (accion == 1) {
+                        System.out.print("\nIngresa el ID de la meta que completaste: ");
+                        String metaId = sc.nextLine();
+                        metaController.completarMeta(usuarioActual.getId(), metaId);
+                    } else if (accion == 2) {
+                        System.out.print("\nIngresa el ID de la meta a la que quieres añadir puntos: ");
+                        String metaId = sc.nextLine();
+                        System.out.print("Ingresa la cantidad de puntos a añadir (número): ");
+                        String ptsStr = sc.nextLine();
+                        int pts = 0;
+                        try {
+                            pts = Integer.parseInt(ptsStr);
+                        } catch (NumberFormatException e) {
+                            System.out.println("Puntos inválidos.");
+                            break;
+                        }
+                        if (pts <= 0) {
+                            System.out.println("Debes ingresar un número positivo.");
+                            break;
+                        }
+                        metaController.actualizarProgresoMeta(usuarioActual.getId(), metaId, pts);
+                    } else {
+                        System.out.println("Opción inválida.");
+                    }
                     break;
 
-                case 12:
+                case 13:
                     System.out.println("\n===== HISTORIAL DE CANJES =====");
                     ArrayList<Canje> historialCanjes = premioController.obtenerHistorialCanjes(usuarioActual.getId());
                     if (historialCanjes.isEmpty()) {
@@ -597,7 +703,7 @@ public class Main {
                     }
                     break;
                 
-                case 13:
+                case 14:
                     System.out.println("\n===== PROGRESO DE UNA META =====");
                     
                     ArrayList<Meta> metasUsuario2 = usuarioActual.getMetas();
@@ -618,10 +724,10 @@ public class Main {
                     usuarioController.mostrarProgresoMeta(usuarioActual, metaIdProgreso);
                     break;
 
-                case 14:
+                case 15:
                     System.out.println("Cerrando sesión...\n");
                      MensajeMotivacional mensajeDespedida = mensajeController.generarMensaje(
-                        "¡Hasta pronto, " + usuarioActual.getNombre() + "! Recuerda: cada día es una oportunidad para mejorar 🌟",
+                        "¡Hasta pronto, " + usuarioActual.getNombre() + "! Recuerda: cada día es una oportunidad para mejorar",
                         "despedida",
                         "cierre_sesion"
                     );
@@ -633,7 +739,7 @@ public class Main {
                 default:
                     System.out.println("Opción inválida. Intente de nuevo.\n");
             }
-        } while (opcion != 14);
+        } while (opcion != 15);
     }
 
     

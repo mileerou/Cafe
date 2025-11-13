@@ -211,60 +211,38 @@ public class MetaController {
         usuario.setMetas(metas);
 
         if (metas.isEmpty()) {
-            System.out.println("\n╔══════════════════════════════════════════════════════════╗");
-            System.out.println("║                  TUS METAS                               ║");
-            System.out.println("╠══════════════════════════════════════════════════════════╣");
-            System.out.println("║  No tienes metas asignadas aún.                         ║");
-            System.out.println("║  Crea tus metas personales y márcalas cuando las        ║");
-            System.out.println("║  completes en la vida real.                             ║");
-            System.out.println("╚══════════════════════════════════════════════════════════╝\n");
+            System.out.println("\nNo tienes metas asignadas aún.");
             return;
         }
 
-        int completadas = contarMetasCompletadas(usuario);
-        int pendientes = contarMetasPendientes(usuario);
-        int totalPuntosDisponibles = calcularPuntosPendientes(usuario);
-
-        //barra progreso
-        double progreso = (completadas + pendientes) > 0 ? (completadas * 100.0) / (completadas + pendientes) : 0;
-        int bloques = (int) (progreso / 5);
-
         System.out.println("\n╔══════════════════════════════════════════════════════════╗");
-        System.out.println("║                 TUS METAS                               ║");
-        System.out.println("╠══════════════════════════════════════════════════════════╣");
-        System.out.printf("║  Completadas: %-5d | Pendientes: %-5d                  ║\n", completadas, pendientes);
-        System.out.printf("║  Puntos disponibles en metas pendientes: %-14d ║\n", totalPuntosDisponibles);
+        System.out.println("║                     TUS METAS                            ║");
         System.out.println("╠══════════════════════════════════════════════════════════╣");
 
         for (Meta meta : metas) {
             String estado = meta.isCompletada() ? "Completada" : "Pendiente";
             String icono = meta.isCompletada() ? "✓" : "✗";
-            
+            double progreso = meta.calcularProgreso();
+
             System.out.printf("║ %s [%s] %s\n", icono, meta.getId(), ajustarTexto(meta.getDescripcion(), 47));
             System.out.printf("║    Estado: %-45s ║\n", estado);
-            System.out.printf("║    Progreso: %-6d / %-6d puntos (%5.2f%%)        ║\n", meta.getPuntosActuales(), meta.getPuntosObjetivo(), meta.calcularProgreso());
-            System.out.printf("║    Recompensa: %-38d puntos ║\n", meta.getPuntosObjetivo());
+            System.out.printf("║    Progreso: %-6d / %-6d puntos (%5.2f%%) ║\n",
+                    meta.getPuntosActuales(), meta.getPuntosObjetivo(), progreso);
             System.out.println("╠══════════════════════════════════════════════════════════╣");
         }
 
         System.out.println("╚══════════════════════════════════════════════════════════╝\n");
-
-        mostrarMensajeProgreso(completadas, pendientes);
     }
 
     public void evaluarMetasCompletadas(String usuarioId) {
-        Usuario usuario = usuarioController.buscarUsuarioPorId(usuarioId);
-        if (usuario == null) return;
+        ArrayList<Meta> metas = metaDAO.obtenerMetas(usuarioId);
 
-        int metasPendientes = contarMetasPendientes(usuario);
-        
-        if (metasPendientes > 0 && usuario.getConsumos().size() % 5 == 0) {
-            MensajeMotivacional mensaje = mensajeController.generarMensaje(
-                "Tienes " + metasPendientes + " meta(s) pendiente(s). ¡No olvides marcarlas cuando las completes!",
-                "recordatorio_metas",
-                "metas_pendientes"
-            );
-            mensajeController.mostrarMensaje(mensaje);
+        for (Meta meta : metas) {
+            if (!meta.isCompletada() && meta.getPuntosActuales() >= meta.getPuntosObjetivo()) {
+                meta.setCompletada(true);
+                metaDAO.actualizarMeta(meta); // Asegúrate de tener este método en tu MetaDAO
+                System.out.println("🎉 ¡Meta completada! " + meta.getDescripcion());
+            }
         }
     }
 
@@ -335,4 +313,54 @@ public class MetaController {
         }
         return String.format("%-" + longitudMaxima + "s", texto) + " ║";
     }
+
+    public void mostrarProgresoMeta(Usuario usuario, String metaId) {
+    if (usuario == null) {
+        System.out.println("Usuario no encontrado.");
+        return;
+    }
+
+    ArrayList<Meta> metas = usuario.getMetas();
+    if (metas == null || metas.isEmpty()) {
+        System.out.println("No tienes metas asignadas aún.");
+        return;
+    }
+
+    Meta metaSeleccionada = null;
+    for (Meta m : metas) {
+        if (m.getId().equals(metaId)) {
+            metaSeleccionada = m;
+            break;
+        }
+    }
+
+    if (metaSeleccionada == null) {
+        System.out.println("Meta no encontrada con el ID proporcionado.");
+        return;
+    }
+
+    double progreso = metaSeleccionada.calcularProgreso();
+    int porcentaje = (int) progreso;
+
+    System.out.println("\n╔══════════════════════════════════════════╗");
+    System.out.printf("║ META: %-35s ║\n", metaSeleccionada.getDescripcion());
+    System.out.println("╠══════════════════════════════════════════╣");
+    System.out.printf("║ Progreso: %3d%% (%d / %d puntos)          ║\n",
+            porcentaje,
+            metaSeleccionada.getPuntosActuales(),
+            metaSeleccionada.getPuntosObjetivo());
+
+    // Generar una barra visual de progreso
+    int barraLength = 30;
+    int llenado = (int) (barraLength * progreso / 100);
+    String barra = "█".repeat(llenado) + "-".repeat(barraLength - llenado);
+
+    System.out.printf("║ [%s] ║\n", barra);
+    System.out.println("╚══════════════════════════════════════════╝\n");
+
+        if (metaSeleccionada.isCompletada()) {
+            System.out.println("🎉 ¡Felicidades! Has completado esta meta. 🎉\n");
+        }
+    }
+
 }

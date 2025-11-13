@@ -89,4 +89,20 @@ public class MetaDAO {
             throw new RuntimeException("Error al actualizar puntos de la meta: " + e.getMessage());
         }
     }
+
+    public void actualizarMeta(Meta meta) {
+        try {
+            collection.updateOne(
+                Filters.eq("id", meta.getId()),
+                Updates.combine(
+                    Updates.set("descripcion", meta.getDescripcion()),
+                    Updates.set("puntosObjetivo", meta.getPuntosObjetivo()),
+                    Updates.set("puntosActuales", meta.getPuntosActuales()),
+                    Updates.set("completada", meta.isCompletada())
+                )
+            );
+        } catch (Exception e) {
+            throw new RuntimeException("Error al actualizar meta: " + e.getMessage());
+        }
+    }
 }

@@ -569,7 +569,7 @@ public class Main {
                                 {"Dormir 8 horas diarias por una semana", "90"},
                                 {"Tomar 2 litros de agua cada día durante 5 días", "60"},
                                 {"Caminar 8,000 pasos diarios durante 7 días", "100"},
-                                {"Tomar un vaso de agua antes de consumir una taza de café", "70"}
+                                {"Tomar un vaso de agua antes de consumir una taza", "70"}
                             };
 
                             System.out.println("Metas disponibles:");
@@ -721,7 +721,7 @@ public class Main {
                     System.out.print("\nIngresa el ID de la meta que deseas revisar: ");
                     String metaIdProgreso = sc.nextLine();
 
-                    usuarioController.mostrarProgresoMeta(usuarioActual, metaIdProgreso);
+                    metaController.mostrarProgresoMeta(usuarioActual, metaIdProgreso);
                     break;
 
                 case 15:

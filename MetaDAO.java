@@ -60,6 +60,19 @@ public class MetaDAO {
         }
     }
 
+    public void deleteMeta(String usuarioId, String metaId) {
+        try {
+            collection.deleteOne(
+                Filters.and(
+                    Filters.eq("usuarioId", usuarioId),
+                    Filters.eq("id", metaId)
+                )
+            );
+        } catch (Exception e) {
+            throw new RuntimeException("Error al eliminar meta: " + e.getMessage());
+        }
+    }
+
     public void actualizarPuntos(String usuarioId, String metaId, int puntosActuales, boolean completada) {
         try {
             collection.updateOne(

@@ -45,11 +45,15 @@ public class MetaController {
         // Marcar meta como completada
         metaEncontrada.marcarComoCompletada();
         metaDAO.marcarCompletada(usuarioId, metaId);
+        
+        // Eliminar meta de las metas pendientes
+        usuario.getMetas().remove(metaEncontrada);
+        metaDAO.deleteMeta(usuarioId, metaId);
 
         // Sumar puntos al usuario
         int puntosGanados = metaEncontrada.getPuntosObjetivo();
         
-        // NUEVO: Registrar puntos ganados
+        // Registrar puntos ganados
         usuario.registrarPuntosGanados(puntosGanados, "meta", 
             "Meta completada: " + metaEncontrada.getDescripcion());
         
@@ -224,7 +228,6 @@ public class MetaController {
         //barra progreso
         double progreso = (completadas + pendientes) > 0 ? (completadas * 100.0) / (completadas + pendientes) : 0;
         int bloques = (int) (progreso / 5);
-        String barra = "[" + "█".repeat(bloques) + " ".repeat(20 - bloques) + "]";
 
         System.out.println("\n╔══════════════════════════════════════════════════════════╗");
         System.out.println("║                 TUS METAS                               ║");

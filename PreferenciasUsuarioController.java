@@ -1,32 +1,49 @@
-import java.io.*; //importe todas las clases y interfaces contenidas en el paquete java.io
-
 public class PreferenciasUsuarioController {
+    private PreferenciasDAO preferenciasDAO;
+    private String usuarioIdActual;
 
-    private final String RUTA_PREFERENCIAS = "preferencias.dat";
+    public PreferenciasUsuarioController() {
+        this.preferenciasDAO = new PreferenciasDAO();
+    }
+
+    public void setUsuarioActual(String usuarioId) {
+        this.usuarioIdActual = usuarioId;
+    }
 
     public void crearPreferencias(PreferenciasUsuario preferencias) {
-        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(RUTA_PREFERENCIAS))) {
-            oos.writeObject(preferencias);
+        try {
+            if (usuarioIdActual == null) {
+                System.err.println("No hay usuario activo.");
+                return;
+            }
+            preferenciasDAO.guardarPreferencias(usuarioIdActual, preferencias);
             System.out.println("Preferencias guardadas exitosamente.");
-        } catch (IOException e) {
+        } catch (Exception e) {
             System.err.println("Error al guardar las preferencias: " + e.getMessage());
         }
     }
 
     public PreferenciasUsuario obtenerPreferencias() {
-        PreferenciasUsuario preferencias = null;
-        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(RUTA_PREFERENCIAS))) {
-            preferencias = (PreferenciasUsuario) ois.readObject();
-        } catch (FileNotFoundException e) {
-            System.err.println("Archivo de preferencias no encontrado.");
-        } catch (IOException | ClassNotFoundException e) {
-            System.err.println("Error al cargar las preferencias: " + e.getMessage());
+        if (usuarioIdActual == null) {
+            System.err.println("No hay usuario activo.");
+            return null;
         }
-        return preferencias;
+        
+        try {
+            return preferenciasDAO.obtenerPreferencias(usuarioIdActual);
+        } catch (Exception e) {
+            System.err.println("Error al cargar las preferencias: " + e.getMessage());
+            return null;
+        }
     }
 
     public void actualizarPreferencias(String tipoCafe, String tamanoTaza, Boolean usaAzucar, String tipoAzucar,
                                        Boolean usaLeche, String tipoLeche, String[] retosPreferidos) {
+        if (usuarioIdActual == null) {
+            System.err.println("No hay usuario activo.");
+            return;
+        }
+
         PreferenciasUsuario actuales = obtenerPreferencias();
         if (actuales == null) {
             actuales = new PreferenciasUsuario();
@@ -57,4 +74,3 @@ public class PreferenciasUsuarioController {
         crearPreferencias(actuales);
     }
 }
-

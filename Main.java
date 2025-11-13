@@ -1,7 +1,6 @@
 import java.util.Scanner;
 import java.util.Date;
 import java.util.UUID;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.text.SimpleDateFormat;
 
@@ -11,11 +10,19 @@ public class Main {
     private static MetaController metaController = new MetaController(usuarioController, mensajeController);
     private static PremioController premioController = new PremioController();
     private static TiendaVirtual tienda = new TiendaVirtual(premioController);
-    private static ArrayList<Premio> catalogo = tienda.obtenerCatalogo();
 
     public static void main(String[] args) {
-    Scanner sc = new Scanner (System.in);
+        Scanner sc = new Scanner(System.in);
         Usuario usuarioActual = null;
+
+        // Mostrar mensaje de conexión
+        try {
+            MongoDBConnection.getDatabase();
+        } catch (Exception e) {
+            System.err.println("Error crítico: No se pudo conectar a la base de datos.");
+            System.err.println("Por favor, verifica tu conexión a internet y la configuración de MongoDB Atlas.");
+            return;
+        }
 
         System.out.println("==============================================");
         System.out.println("   ¡Bienvenido a Movaccino, la app que te ayuda");
@@ -28,6 +35,7 @@ public class Main {
         System.out.println("           \\      /");
         System.out.println("            `----'");
         System.out.println("==============================================\n");
+        
         int opcion;
 
         do {
@@ -42,9 +50,10 @@ public class Main {
                 System.out.println("Por favor, ingresa un número válido.");
                 opcion = 0;
             }
-            switch(opcion){
+            
+            switch(opcion) {
                 case 1:
-                    try{
+                    try {
                         UUID uuid = UUID.randomUUID();
                         String id = uuid.toString();
                         System.out.print("Nombre: ");
@@ -71,13 +80,13 @@ public class Main {
                         );
                         mensajeController.mostrarMensaje(mensajeBienvenida);
 
-                    } catch (Exception e){
+                    } catch (Exception e) {
                         System.out.println("Error al registrar usuario: " + e.getMessage());
                     }
-
                     break;
+                    
                 case 2:
-                    try{
+                    try {
                         System.out.println("Iniciar sesión");
                         String correoLogin;
                         do {
@@ -91,10 +100,11 @@ public class Main {
                         String contrasenaLogin = sc.nextLine();
                         String contraseñaLoginHash = HashUtil.hashPassword(contrasenaLogin);
                         usuarioActual = usuarioController.login(correoLogin, contraseñaLoginHash);
-                        if(usuarioActual != null){
+                        
+                        if(usuarioActual != null) {
                             if(usuarioActual.isPrimerLogin()) {
                                 System.out.println("¡Bienvenido por primera vez, " + usuarioActual.getNombre() + "!");
-                                usuarioActual.setPrimerLogin(false);
+                                usuarioController.actualizarPrimerLogin(usuarioActual);
                             }
                             System.out.println("¡Inicio de sesión exitoso! Bienvenido, " + usuarioActual.getNombre() + ".\n");
 
@@ -108,61 +118,29 @@ public class Main {
                         } else {
                             System.out.println("Credenciales incorrectas.");
                         }
-                    }catch (Exception e){
+                    } catch (Exception e) {
                         System.out.println("Error al iniciar sesión: " + e.getMessage());
                     }
                     break;
+                    
                 case 3:
                     System.out.println("Gracias por usar Movaccino. ¡Hasta luego!");
+                    MongoDBConnection.closeConnection();
                     break;
+                    
                 default:
                     System.out.println("Opción inválida. Intente de nuevo.\n");
             }
-        }while(opcion != 3);
-    }
-
-    private static PreferenciasUsuario registrarPreferencias(Scanner sc) {
-        System.out.println("=== CONFIGURA TUS PREFERENCIAS ===");
-
-        System.out.print("Tipo de café preferido: ");
-        String tipoCafe = sc.nextLine();
-
-        System.out.print("Tamaño de taza preferido (pequeña, mediana, grande): ");
-        String tamanoTaza = sc.nextLine();
-
-        System.out.print("¿Usas azúcar? (si/no): ");
-        boolean usaAzucar = sc.nextLine().equalsIgnoreCase("si");
-        String tipoAzucar = "";
-        if (usaAzucar) {
-            System.out.print("Tipo de azúcar (blanca, morena, stevia...): ");
-            tipoAzucar = sc.nextLine();
-        }
-
-        System.out.print("¿Usas leche? (si/no): ");
-        boolean usaLeche = sc.nextLine().equalsIgnoreCase("si");
-        String tipoLeche = "";
-        if (usaLeche) {
-            System.out.print("Tipo de leche (entera, descremada, vegetal...): ");
-            tipoLeche = sc.nextLine();
-        }
-
-        System.out.print("Menciona tus retos preferidos (separados por comas): ");
-        String[] retos = sc.nextLine().split(",");
-
-        return new PreferenciasUsuario(
-                tipoCafe,
-                tamanoTaza,
-                usaAzucar,
-                tipoAzucar,
-                usaLeche,
-                tipoLeche,
-                retos
-        );
+        } while(opcion != 3);
+        
+        sc.close();
     }
 
     public static void mostrarMenuUsuario(Scanner sc, Usuario usuarioActual) {
         int opcion;
         PreferenciasUsuarioController preferenciasController = new PreferenciasUsuarioController();
+        preferenciasController.setUsuarioActual(usuarioActual.getId());
+        
         do {
             System.out.println("   ^    ^  ");
             System.out.println("  ( ; . ; ) つ  ");
@@ -175,7 +153,7 @@ public class Main {
             System.out.println("3. Configurar preferencias");
             System.out.println("4. Ver mis preferencias");
             System.out.println("5. Ver mis puntos actuales");
-            System.out.println("6. Ver mis puntos totales ganados"); // NUEVA OPCIÓN
+            System.out.println("6. Ver mis puntos totales ganados");
             System.out.println("7. Modificar un campo de mi consumo de hoy");
             System.out.println("8. Actualizar usuario");
             System.out.println("9. Ver tienda de premios");
@@ -191,6 +169,7 @@ public class Main {
                 System.out.println("Por favor, ingresa un número válido.");
                 opcion = 0;
             }
+            
             switch (opcion) {
                 case 1:
                     try {
@@ -204,7 +183,6 @@ public class Main {
                         String tamanoTaza = "", tipoAzucar = "", tipoLeche = "", tipoCafe = "", respuestasExtras = "";
 
                         if (subOpcion == 1) {
-                            // Usar preferencias guardadas
                             PreferenciasUsuario pref = usuarioActual.getPreferencias();
 
                             if (pref == null) {
@@ -212,11 +190,10 @@ public class Main {
                                 break;
                             }
 
-                            // Validar que las preferencias tengan datos
                             if (pref.getTipoCafe() == null || pref.getTipoCafe().isEmpty() ||
                                 pref.getTamañoTaza() == null || pref.getTamañoTaza().isEmpty()) {
                                 System.out.println("\nTus preferencias están incompletas. Configúralas antes de usar esta opción.\n");
-                                break; 
+                                break;
                             }
 
                             tamanoTaza = pref.getTamañoTaza();
@@ -226,38 +203,29 @@ public class Main {
                             respuestasExtras = "Consumo habitual";
 
                             System.out.println("\n☕ Se ha registrado tu consumo habitual.");
-                        } 
-                        else if (subOpcion == 2) {
-                            // Ingreso manual (consumo especial)
+                        } else if (subOpcion == 2) {
                             System.out.print("Tamaño de taza (Oz): ");
                             tamanoTaza = sc.nextLine();
-
                             System.out.print("Tipo de azúcar: ");
                             tipoAzucar = sc.nextLine();
-
                             System.out.print("Tipo de leche: ");
                             tipoLeche = sc.nextLine();
-
                             System.out.print("Tipo de café: ");
                             tipoCafe = sc.nextLine();
-
                             System.out.print("¿Algún comentario extra? ");
                             respuestasExtras = sc.nextLine();
 
                             System.out.println("\n☕ Se ha registrado tu consumo especial.");
-                        } 
-                        else {
+                        } else {
                             System.out.println("Opción inválida.");
-                            break; // volver al menú principal
+                            break;
                         }
 
-                        // Validación final antes de guardar
                         if (tamanoTaza.isEmpty() || tipoCafe.isEmpty()) {
                             System.out.println("\n⚠️ Error: no se registró el consumo porque faltan datos.\n");
                             break;
                         }
 
-                        // Guardar el consumo
                         ConsumoController consumoController = new ConsumoController(usuarioActual);
                         consumoController.guardarConsumoDiario(fecha, tamanoTaza, tipoAzucar, tipoLeche, tipoCafe, respuestasExtras);
 
@@ -271,10 +239,9 @@ public class Main {
                     } catch (Exception e) {
                         System.out.println("Error al registrar consumo: " + e.getMessage());
                     }
-                break;
+                    break;
 
                 case 2:
-                    // Submenú de reportes con filtros
                     System.out.println("\n===== REPORTES DE CONSUMO =====");
                     System.out.println("1. Ver todo el historial");
                     System.out.println("2. Filtrar por fecha específica");
@@ -290,12 +257,10 @@ public class Main {
                         
                         switch (opcionReporte) {
                             case 1:
-                                // Ver todo el historial (comportamiento original)
                                 consumosFiltrados = consumoController.obtenerHistorialConsumo();
                                 break;
                                 
                             case 2:
-                                // Filtrar por fecha específica
                                 System.out.print("Ingresa la fecha (dd/MM/yyyy): ");
                                 String fechaStr = sc.nextLine();
                                 try {
@@ -309,7 +274,6 @@ public class Main {
                                 break;
                                 
                             case 3:
-                                // Filtrar por rango de fechas
                                 System.out.print("Fecha inicio (dd/MM/yyyy): ");
                                 String inicioStr = sc.nextLine();
                                 System.out.print("Fecha fin (dd/MM/yyyy): ");
@@ -326,14 +290,12 @@ public class Main {
                                 break;
                                 
                             case 4:
-                                // Filtrar por tipo de café
                                 System.out.print("Ingresa el tipo de café: ");
                                 String tipoCafe = sc.nextLine();
                                 consumosFiltrados = consumoController.obtenerPorTipoCafe(tipoCafe);
                                 break;
                                 
                             case 5:
-                                // Filtrar por tamaño de taza
                                 System.out.print("Ingresa el tamaño de taza: ");
                                 String tamanoTaza = sc.nextLine();
                                 consumosFiltrados = consumoController.obtenerPorTamanoTaza(tamanoTaza);
@@ -344,7 +306,6 @@ public class Main {
                                 break;
                         }
                         
-                        // Mostrar resultados filtrados
                         if (consumosFiltrados.isEmpty()) {
                             System.out.println("No hay consumos que coincidan con los criterios.\n");
                         } else {
@@ -363,7 +324,6 @@ public class Main {
                                 System.out.println("╚══════════════════════════════════╝\n");
                             }
                             
-                            // Mensaje motivacional solo para el caso de ver todo el historial
                             if (opcionReporte == 1 && consumosFiltrados.size() >= 7) {
                                 MensajeMotivacional mensaje = mensajeController.generarMensaje(
                                     "¡Llevas " + consumosFiltrados.size() + " registros! Tu constancia es admirable 📈",
@@ -380,7 +340,6 @@ public class Main {
                     break;
 
                 case 3:
-                    // Formulario de preferencias
                     System.out.println("\n===== CONFIGURAR PREFERENCIAS =====");
                     System.out.print("Tipo de café preferido: ");
                     String tipoCafe = sc.nextLine();
@@ -417,11 +376,9 @@ public class Main {
                         "preferencias_configuradas"
                     );
                     mensajeController.mostrarMensaje(mensajePref);
-                    metaController.evaluarMetasCompletadas(usuarioActual.getId());
-                break;
+                    break;
 
                 case 4:
-                // Ver preferencias
                     System.out.println("\n===== TUS PREFERENCIAS =====");
                     PreferenciasUsuario pref = preferenciasController.obtenerPreferencias();
                     if (pref != null) {
@@ -436,29 +393,28 @@ public class Main {
                             System.out.println("Tipo de leche: " + pref.getTipoLeche());
                         }
                         System.out.println("Retos preferidos: " + java.util.Arrays.toString(pref.getRetosPreferidos()));
+                    } else {
+                        System.out.println("No tienes preferencias configuradas.");
                     }
-                break;
+                    break;
 
-                case 5: 
-                    // Ver puntos actuales
+                case 5:
                     System.out.println("\n===== TUS PUNTOS ACTUALES =====");
                     System.out.println("Puntos disponibles: " + usuarioActual.getPuntos() + " puntos");
                     System.out.println("Puntos totales ganados: " + usuarioActual.getPuntosTotalesGanados() + " puntos");
                     System.out.println("Puntos canjeados: " + (usuarioActual.getPuntosTotalesGanados() - usuarioActual.getPuntos()) + " puntos\n");
-                break;
+                    break;
 
                 case 6:
-                    // NUEVO: Ver puntos totales ganados con historial
                     usuarioActual.mostrarHistorialPuntos();
-                break;
+                    break;
 
                 case 7:
-                    // Modificar consumo de hoy
                     ConsumoController consumoControllerMod = new ConsumoController(usuarioActual);
                     ArrayList<Consumo> historial = consumoControllerMod.obtenerHistorialConsumo();
                     
                     if (historial.isEmpty()) {
-                        System.out.println("No hay consumo registrado hoy para modificar.\n");
+                        System.out.println("No hay consumo registrado para modificar.\n");
                         break;
                     }
 
@@ -468,17 +424,15 @@ public class Main {
                     }
 
                     System.out.print("Opción: ");
-                    opcion = sc.nextInt();
-                    sc.nextLine(); // limpiar buffer
+                    int opcionConsumo = Integer.parseInt(sc.nextLine());
 
-                    if (opcion < 1 || opcion > historial.size()) {
+                    if (opcionConsumo < 1 || opcionConsumo > historial.size()) {
                         System.out.println("Opción inválida.\n");
                         break;
                     }
 
-                    Consumo consumoSeleccionado = historial.get(opcion - 1);
+                    Consumo consumoSeleccionado = historial.get(opcionConsumo - 1);
 
-                    // Permitir seleccionar varios campos por número para editar de una sola vez
                     System.out.println("¿Qué campos deseas modificar? Selecciona los números separados por comas:");
                     System.out.println("1. Tamaño de taza");
                     System.out.println("2. Tipo de azúcar");
@@ -538,7 +492,7 @@ public class Main {
                         }
                     }
                     System.out.println();
-                break;
+                    break;
 
                 case 8:
                     System.out.println("\n===== ACTUALIZAR USUARIO =====");
@@ -558,11 +512,11 @@ public class Main {
                     );
 
                     System.out.println("Usuario actualizado correctamente.\n");
-
-                break;
+                    break;
 
                 case 9:
                     System.out.println("\n===== TIENDA DE PREMIOS =====");
+                    ArrayList<Premio> catalogo = tienda.obtenerCatalogo();
                     for (Premio premio : catalogo) {
                         System.out.println("ID: " + premio.getId());
                         System.out.println("Nombre: " + premio.getNombre());
@@ -580,21 +534,22 @@ public class Main {
                         String resultadoCanje = premioController.canjearPremio(usuarioActual, premioId);
                         System.out.println(resultadoCanje + "\n");
 
-                        if(resultadoCanje.contains("exitosamente")){
+                        if(resultadoCanje.contains("exitosamente") || resultadoCanje.contains("canjeado")) {
                             MensajeMotivacional mensajePremio = mensajeController.generarMensaje(
                                 "¡Felicidades por canjear tu premio!",
                                 "premio",
                                 "premio_canjeado"
                             );
                             mensajeController.mostrarMensaje(mensajePremio);
-
                             metaController.evaluarMetasCompletadas(usuarioActual.getId());
                         }
                     }
-                break;
+                    break;
+                    
                 case 10:
                     metaController.obtenerMetas(usuarioActual.getId());
                     break;
+                    
                 case 11:
                     System.out.println("\n===== COMPLETAR META =====");
                     
@@ -623,7 +578,6 @@ public class Main {
                     String metaId = sc.nextLine();
                     
                     metaController.completarMeta(usuarioActual.getId(), metaId);
-
                     break;
 
                 case 12:
@@ -641,7 +595,7 @@ public class Main {
                         }
                     }
                     break;
-
+                    
                 case 13:
                     System.out.println("Cerrando sesión...\n");
                      MensajeMotivacional mensajeDespedida = mensajeController.generarMensaje(

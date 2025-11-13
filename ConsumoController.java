@@ -3,81 +3,72 @@ import java.util.Date;
 import java.util.stream.Collectors;
 
 public class ConsumoController {
-    private ArrayList<Consumo> consumos;
     private Usuario usuario;
+    private ConsumoDAO consumoDAO;
+    private UsuarioController usuarioController;
 
     public ConsumoController(Usuario usuario) {
-        this.consumos = new ArrayList<>();
         this.usuario = usuario;
+        this.consumoDAO = new ConsumoDAO();
+        this.usuarioController = new UsuarioController();
     }
 
-    // Guardar un nuevo consumo
     public void guardarConsumoDiario(Date fecha, String tamanoTaza, String tipoAzucar, String tipoLeche, String tipoCafe, String respuestasExtras) {
         try {
             Consumo nuevoConsumo = new Consumo(fecha, tamanoTaza, tipoAzucar, tipoLeche, tipoCafe, respuestasExtras);
-            consumos.add(nuevoConsumo);
+            
+            // Guardar en memoria del usuario
             usuario.agregarConsumo(nuevoConsumo);
+            
+            // Guardar en base de datos
+            consumoDAO.insertarConsumo(usuario.getId(), nuevoConsumo);
             
             // NUEVO: Registrar puntos por consumo
             int puntosPorConsumo = 10; // 10 puntos por cada consumo registrado
             usuario.registrarPuntosGanados(puntosPorConsumo, "consumo", 
                 "Registro de consumo: " + tipoCafe + " (" + tamanoTaza + "oz)");
-                
+            
+            // Sumar puntos al usuario
+            usuarioController.sumarPuntosConHistorial(usuario, puntosPorConsumo);
+            
         } catch (Exception e) {
             throw new RuntimeException("Error al guardar el consumo diario: " + e.getMessage());
         }
     }
 
-    // Obtener todo el historial de consumos
     public ArrayList<Consumo> obtenerHistorialConsumo() {
         return usuario.getConsumos();
     }
 
-    // Obtener resumen de consumos
-    public String obtenerResumenConsumo(){
+    public String obtenerResumenConsumo() {
         return "----Resumen de Consumos----\n" +
-               "Total de consumos: " + consumos.size() + "\n" +
+               "Total de consumos: " + usuario.getConsumos().size() + "\n" +
                "Puntos acumulados: " + usuario.getPuntos() + "\n";
-    }
-
-    // Evaluar puntos del usuario según consumos
-    public void evaluarPuntos() {
-        try {
-            int puntosGanados = consumos.size() * 10;
-            usuario.setPuntos(usuario.getPuntos() + puntosGanados);
-        } catch (Exception e) {
-            throw new RuntimeException("Error al evaluar puntos: " + e.getMessage());
-        }
     }
 
     // ================= FILTROS =================
 
-    // Obtener consumos por fecha exacta
     public ArrayList<Consumo> obtenerPorFecha(Date fecha) {
-        return consumos.stream()
+        return usuario.getConsumos().stream()
                 .filter(c -> c.getFecha().equals(fecha))
                 .collect(Collectors.toCollection(ArrayList::new));
     }
 
-    // Obtener consumos por rango de fechas
     public ArrayList<Consumo> obtenerPorRangoFechas(Date inicio, Date fin) {
-        return consumos.stream()
+        return usuario.getConsumos().stream()
                 .filter(c -> !c.getFecha().before(inicio) && !c.getFecha().after(fin))
                 .collect(Collectors.toCollection(ArrayList::new));
     }
 
-    // Obtener consumos por tipo de café
     public ArrayList<Consumo> obtenerPorTipoCafe(String tipoCafe) {
-        return consumos.stream()
+        return usuario.getConsumos().stream()
                 .filter(c -> c.getTipoCafe().equalsIgnoreCase(tipoCafe))
                 .collect(Collectors.toCollection(ArrayList::new));
     }
 
-    // Obtener consumos por tamaño de taza
     public ArrayList<Consumo> obtenerPorTamanoTaza(String tamanoTaza) {
-        return consumos.stream()
+        return usuario.getConsumos().stream()
                 .filter(c -> c.getTamañoTaza().equalsIgnoreCase(tamanoTaza))
                 .collect(Collectors.toCollection(ArrayList::new));
     }
-
 }

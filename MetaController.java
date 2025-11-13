@@ -1,24 +1,29 @@
 import java.util.ArrayList;
 
-public class MetaController{
+public class MetaController {
     private UsuarioController usuarioController;
     private MensajeController mensajeController;
+    private MetaDAO metaDAO;
 
-    public MetaController(UsuarioController usuarioController, MensajeController mensajeController){
+    public MetaController(UsuarioController usuarioController, MensajeController mensajeController) {
         this.usuarioController = usuarioController;
         this.mensajeController = mensajeController;
+        this.metaDAO = new MetaDAO();
     }
 
-    public void asignarMeta(String usuarioId, Meta meta){
+    public void asignarMeta(String usuarioId, Meta meta) {
         Usuario usuario = usuarioController.buscarUsuarioPorId(usuarioId);
-        if (usuario == null){
+        if (usuario == null) {
             System.out.println("Usuario no encontrado.");
             return;
         }
+        
         usuario.agregarMeta(meta);
-        System.out.println("Meta asignada exitosamente: " + meta.getDescripcion());  
+        metaDAO.insertarMeta(meta, usuarioId);
+        System.out.println("Meta asignada exitosamente: " + meta.getDescripcion());
     }
-    public void completarMeta(String usuarioId, String metaId){
+
+    public void completarMeta(String usuarioId, String metaId) {
         Usuario usuario = usuarioController.buscarUsuarioPorId(usuarioId);
         if (usuario == null) {
             System.out.println("Usuario no encontrado.");
@@ -39,14 +44,16 @@ public class MetaController{
 
         // Marcar meta como completada
         metaEncontrada.marcarComoCompletada();
+        metaDAO.marcarCompletada(usuarioId, metaId);
 
         // Sumar puntos al usuario
         int puntosGanados = metaEncontrada.getPuntosObjetivo();
-        usuarioController.sumarPuntos(usuario, puntosGanados);
         
         // NUEVO: Registrar puntos ganados
         usuario.registrarPuntosGanados(puntosGanados, "meta", 
             "Meta completada: " + metaEncontrada.getDescripcion());
+        
+        usuarioController.sumarPuntosConHistorial(usuario, puntosGanados);
 
         System.out.println("\n╔══════════════════════════════════════════════════════════╗");
         System.out.println("║            ¡META COMPLETADA!                               ║");
@@ -57,7 +64,6 @@ public class MetaController{
         System.out.printf("║  Puntos totales ganados: %-31d ║\n", usuario.getPuntosTotalesGanados());
         System.out.println("╚══════════════════════════════════════════════════════════╝\n");
 
-        // Mostrar mensaje motivacional de meta completada
         MensajeMotivacional mensajeMeta = mensajeController.generarMensaje(
             "¡Meta completada! " + metaEncontrada.getDescripcion() + ". ¡Sigue así!",
             "meta_completada",
@@ -97,28 +103,29 @@ public class MetaController{
             return;
         }
 
+        if (!usuario.getMetas().isEmpty()) {
+            System.out.println("Ya tienes metas asignadas.");
+            return;
+        }
+
         ArrayList<Meta> metas = new ArrayList<>();
 
-        // según tipo de café
         if (prefs.getTipoCafe().equalsIgnoreCase("americano")) {
             metas.add(new Meta("1", "Preparar un café americano perfecto durante 3 días seguidos", 50));
         } else if (prefs.getTipoCafe().equalsIgnoreCase("capuchino")) {
             metas.add(new Meta("2", "Tomar un capuchino sin azúcar durante 5 días", 60));
         }
 
-        // Según uso de azúcar
         if (prefs.isUsaAzucar()) {
             metas.add(new Meta("3", "Reducir el azúcar a la mitad durante una semana", 70));
         } else {
             metas.add(new Meta("4", "Mantenerte sin azúcar por 7 días", 80));
         }
 
-        // Según uso de leche
         if (prefs.isUsaLeche()) {
             metas.add(new Meta("5", "Probar leche vegetal durante 3 días", 50));
         }
 
-        // Según retos preferidos
         String[] retos = prefs.getRetosPreferidos();
         for (String reto : retos) {
             switch (reto.toLowerCase()) {
@@ -137,21 +144,14 @@ public class MetaController{
             }
         }
 
-        // Evitar duplicados si el usuario ya tiene metas
-        if (!usuario.getMetas().isEmpty()) {
-            System.out.println("Ya tienes metas asignadas.");
-            return;
-        }
-
-        // Asignar metas al usuario
         for (Meta meta : metas) {
-            usuario.agregarMeta(meta);
+            asignarMeta(usuarioId, meta);
         }
 
         System.out.println("\n ¡Metas personalizadas creadas según tus preferencias!");
     }
-//
-    public void obtenerMetas(String usuarioId){
+
+    public void obtenerMetas(String usuarioId) {
         Usuario usuario = usuarioController.buscarUsuarioPorId(usuarioId);
         if (usuario == null) {
             System.out.println("Usuario no encontrado.");
@@ -184,7 +184,7 @@ public class MetaController{
 
         for (Meta meta : metas) {
             String estado = meta.isCompletada() ? "Completada" : "Pendiente";
-            String icono = meta.isCompletada() ? "/" : "X";
+            String icono = meta.isCompletada() ? "✓" : "✗";
             
             System.out.printf("║ %s [%s] %s\n", icono, meta.getId(), ajustarTexto(meta.getDescripcion(), 47));
             System.out.printf("║    Estado: %-45s ║\n", estado);
@@ -194,18 +194,15 @@ public class MetaController{
 
         System.out.println("╚══════════════════════════════════════════════════════════╝\n");
 
-        // Mensaje motivacional según el progreso
         mostrarMensajeProgreso(completadas, pendientes);
     }
-    public void evaluarMetasCompletadas(String usuarioId){
+
+    public void evaluarMetasCompletadas(String usuarioId) {
         Usuario usuario = usuarioController.buscarUsuarioPorId(usuarioId);
-        if (usuario == null) {
-            return;
-        }
+        if (usuario == null) return;
 
         int metasPendientes = contarMetasPendientes(usuario);
         
-        // Mostrar recordatorio ocasional (cada 5 consumos)
         if (metasPendientes > 0 && usuario.getConsumos().size() % 5 == 0) {
             MensajeMotivacional mensaje = mensajeController.generarMensaje(
                 "Tienes " + metasPendientes + " meta(s) pendiente(s). ¡No olvides marcarlas cuando las completes!",
@@ -215,28 +212,6 @@ public class MetaController{
             mensajeController.mostrarMensaje(mensaje);
         }
     }
-
-    public void crearMetasIniciales(String usuarioId) {
-        Usuario usuario = usuarioController.buscarUsuarioPorId(usuarioId);
-        if (usuario == null) {
-            return;
-        }
-
-        if (!usuario.getMetas().isEmpty()) {
-            return;
-        }
-
-        asignarMeta(usuarioId, new Meta("1", "Correr 10 km", 100));
-        asignarMeta(usuarioId, new Meta("2", "Meditar 15 minutos por 7 días", 50));
-        asignarMeta(usuarioId, new Meta("3", "Hacer ejercicio 3 veces esta semana", 60));
-        asignarMeta(usuarioId, new Meta("4", "Leer un libro completo", 80));
-        asignarMeta(usuarioId, new Meta("5", "Caminar 10,000 pasos diarios por 7 días", 70));
-        asignarMeta(usuarioId, new Meta("6", "No tomar café por 3 días", 40));
-        asignarMeta(usuarioId, new Meta("7", "Tomar 8 vasos de agua diarios por 7 días", 50));
-
-        System.out.println("\n🎯 ¡Metas iniciales creadas! Márcalas como completadas cuando las logres.");
-    }
-
 
     private Meta buscarMetaPorId(Usuario usuario, String metaId) {
         for (Meta meta : usuario.getMetas()) {
@@ -250,9 +225,7 @@ public class MetaController{
     private int contarMetasCompletadas(Usuario usuario) {
         int count = 0;
         for (Meta meta : usuario.getMetas()) {
-            if (meta.isCompletada()) {
-                count++;
-            }
+            if (meta.isCompletada()) count++;
         }
         return count;
     }
@@ -260,9 +233,7 @@ public class MetaController{
     private int contarMetasPendientes(Usuario usuario) {
         int count = 0;
         for (Meta meta : usuario.getMetas()) {
-            if (!meta.isCompletada()) {
-                count++;
-            }
+            if (!meta.isCompletada()) count++;
         }
         return count;
     }

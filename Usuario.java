@@ -140,6 +140,14 @@ public class Usuario {
         this.correo = correo;
     }
 
+    public void setPuntosTotalesGanados(int puntosTotalesGanados) {
+        this.puntosTotalesGanados = puntosTotalesGanados;
+    }
+
+    public void setHistorialPuntos(ArrayList<HashMap<String, Object>> historialPuntos) {
+        this.historialPuntos = historialPuntos;
+    }
+
     public void setContrasenaHash(String contrasenaHash) {
         this.contrasenaHash = contrasenaHash;
     }

@@ -3,24 +3,22 @@ import java.util.Date;
 import java.util.UUID;
 
 public class PremioController {
-
-    private ArrayList<Premio> premios;
-    private ArrayList<Canje> historialCanjes;
+    private PremioDAO premioDAO;
+    private CanjeDAO canjeDAO;
 
     public PremioController() {
-        premios = new ArrayList<>();
-        historialCanjes = new ArrayList<>();
+        this.premioDAO = new PremioDAO();
+        this.canjeDAO = new CanjeDAO();
     }
 
-    // Agregar un premio a la lista
     public void agregarPremio(Premio premio) {
-        premios.add(premio);
+        premioDAO.insertarPremio(premio);
     }
 
     public ArrayList<Premio> getPremios() {
-    return premios;}
+        return premioDAO.listarPremios();
+    }
 
-    //  Registrar canje
     private void registrarCanje(String usuarioId, Premio premio, int puntosUsados) {
         Canje nuevoCanje = new Canje(
             UUID.randomUUID().toString(),
@@ -29,22 +27,16 @@ public class PremioController {
             new Date(),
             puntosUsados
         );
-        historialCanjes.add(nuevoCanje);
+        canjeDAO.insertarCanje(nuevoCanje);
     }
 
-    //Obtener historial de canjes de un usuario
     public ArrayList<Canje> obtenerHistorialCanjes(String usuarioId) {
-        ArrayList<Canje> canjesUsuario = new ArrayList<>();
-        for (Canje c : historialCanjes) {
-            if (c.getUsuarioId().equals(usuarioId)) {
-                canjesUsuario.add(c);
-            }
-        }
-        return canjesUsuario;
+        return canjeDAO.obtenerCanjes(usuarioId);
     }
 
-    // Obtener mensajes sobre premios disponibles
     public void mostrarMensajesPremios() {
+        ArrayList<Premio> premios = getPremios();
+        
         if (premios.isEmpty()) {
             System.out.println("No hay premios disponibles por el momento.");
             return;
@@ -54,16 +46,13 @@ public class PremioController {
         for (Premio premio : premios) {
             String mensaje = "Premio: " + premio.getNombre() +
                              " | Puntos requeridos: " + premio.getPuntosRequeridos() +
-                             " | Stock: " + (premio.isDisponible() ? "Disponible " : "Agotado ");
+                             " | Stock: " + (premio.isDisponible() ? "Disponible" : "Agotado");
             System.out.println(mensaje);
         }
     }
 
     public String canjearPremio(Usuario usuario, String premioId) {
-        Premio premio = premios.stream()
-                               .filter(p -> p.getId().equals(premioId))
-                               .findFirst()
-                               .orElse(null);
+        Premio premio = premioDAO.buscarPremioPorId(premioId);
 
         if (premio == null) {
             return "Premio no encontrado.";
@@ -78,8 +67,17 @@ public class PremioController {
         }
 
         // Realizar el canje
-        usuario.restarPuntos(premio.getPuntosRequeridos());
-        premio.setStock(premio.getStock() - 1);
+        int nuevosPuntos = usuario.getPuntos() - premio.getPuntosRequeridos();
+        usuario.setPuntos(nuevosPuntos);
+        
+        // Actualizar puntos del usuario en la base de datos
+        UsuarioDAO usuarioDAO = new UsuarioDAO();
+        usuarioDAO.actualizarPuntos(usuario.getId(), nuevosPuntos);
+        
+        // Actualizar stock del premio
+        int nuevoStock = premio.getStock() - 1;
+        premio.setStock(nuevoStock);
+        premioDAO.actualizarStock(premio.getId(), nuevoStock);
 
         // Registrar el canje en el historial
         registrarCanje(usuario.getId(), premio, premio.getPuntosRequeridos());

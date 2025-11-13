@@ -160,7 +160,8 @@ public class Main {
             System.out.println("10. Ver mis metas");
             System.out.println("11. Completar una meta");
             System.out.println("12. Ver historial de canjes");
-            System.out.println("13. Cerrar sesión");
+            System.out.println("13. Ver progreso de una meta");
+            System.out.println("14. Cerrar sesión");
             System.out.print("Elige una opción: ");
             String input = sc.nextLine();
             try {
@@ -595,8 +596,29 @@ public class Main {
                         }
                     }
                     break;
-                    
+                
                 case 13:
+                    System.out.println("\n===== PROGRESO DE UNA META =====");
+                    
+                    ArrayList<Meta> metasUsuario2 = usuarioActual.getMetas();
+                    if (metasUsuario2 == null || metasUsuario2.isEmpty()) {
+                        System.out.println("No tienes metas registradas aún.\n");
+                        break;
+                    }
+
+                    System.out.println("Metas disponibles:");
+                    for (Meta meta : metasUsuario2) {
+                        System.out.printf("- ID: %s | %s (%d puntos)\n",
+                                meta.getId(), meta.getDescripcion(), meta.getPuntosObjetivo());
+                    }
+
+                    System.out.print("\nIngresa el ID de la meta que deseas revisar: ");
+                    String metaIdProgreso = sc.nextLine();
+
+                    usuarioController.mostrarProgresoMeta(usuarioActual, metaIdProgreso);
+                    break;
+
+                case 14:
                     System.out.println("Cerrando sesión...\n");
                      MensajeMotivacional mensajeDespedida = mensajeController.generarMensaje(
                         "¡Hasta pronto, " + usuarioActual.getNombre() + "! Recuerda: cada día es una oportunidad para mejorar 🌟",
@@ -611,7 +633,7 @@ public class Main {
                 default:
                     System.out.println("Opción inválida. Intente de nuevo.\n");
             }
-        } while (opcion != 13);
+        } while (opcion != 14);
     }
 
     

@@ -158,7 +158,8 @@ public class MetaController {
             return;
         }
 
-        ArrayList<Meta> metas = usuario.getMetas();
+        ArrayList<Meta> metas = metaDAO.obtenerMetas(usuarioId);
+        usuario.setMetas(metas);
 
         if (metas.isEmpty()) {
             System.out.println("\n╔══════════════════════════════════════════════════════════╗");
@@ -174,6 +175,11 @@ public class MetaController {
         int completadas = contarMetasCompletadas(usuario);
         int pendientes = contarMetasPendientes(usuario);
         int totalPuntosDisponibles = calcularPuntosPendientes(usuario);
+
+        //barra progreso
+        double progreso = (completadas + pendientes) > 0 ? (completadas * 100.0) / (completadas + pendientes) : 0;
+        int bloques = (int) (progreso / 5);
+        String barra = "[" + "█".repeat(bloques) + " ".repeat(20 - bloques) + "]";
 
         System.out.println("\n╔══════════════════════════════════════════════════════════╗");
         System.out.println("║                 TUS METAS                               ║");

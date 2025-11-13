@@ -132,4 +132,26 @@ public class UsuarioController {
         usuario.setPrimerLogin(false);
         usuarioDAO.actualizarPrimerLogin(usuario.getId(), false);
     }
+
+    // método para mostrar el progreso de una meta
+    public void mostrarProgresoMeta(Usuario usuario, String metaId) {
+        ArrayList<Meta> metas = usuario.getMetas();
+        for (Meta meta : metas) {
+            if (meta.getId().equals(metaId)) {
+                double progreso = meta.calcularProgreso();
+                System.out.printf(
+                    "\nProgreso de la meta '%s': %.2f%% (%d / %d puntos)\n",
+                    meta.getDescripcion(),
+                    progreso,
+                    meta.getPuntosActuales(),
+                    meta.getPuntosObjetivo()
+                );
+                if (meta.isCompletada()) {
+                    System.out.println(" ¡Meta completada!");
+                }
+                return;
+            }
+        }
+        System.out.println(" No se encontró ninguna meta con el ID proporcionado.");
+    }
 }

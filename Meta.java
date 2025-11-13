@@ -2,6 +2,7 @@ public class Meta {
     private String id;
     private String descripcion;
     private int puntosObjetivo;
+    private int puntosActuales;
     private boolean completada;
 
     // Constructor
@@ -9,6 +10,7 @@ public class Meta {
         this.id = id;
         this.descripcion = descripcion;
         this.puntosObjetivo = puntosObjetivo;
+        this.puntosActuales = 0;
         this.completada = false;
     }
 
@@ -23,6 +25,10 @@ public class Meta {
 
     public int getPuntosObjetivo() {
         return puntosObjetivo;
+    }
+
+    public int getPuntosActuales() {
+        return puntosActuales;
     }
 
     public boolean isCompletada() {
@@ -42,8 +48,21 @@ public class Meta {
         this.puntosObjetivo = puntosObjetivo;
     }
 
+    public void setPuntosActuales(int puntosActuales) {
+        this.puntosActuales = puntosActuales;
+        if (puntosActuales >= puntosObjetivo) {
+            this.completada = true;
+        }
+    }
+
     public void setCompletada(boolean completada) {
         this.completada = completada;
+    }
+
+    // Método para calcular progreso
+    public double calcularProgreso() {
+        if (puntosObjetivo == 0) return 0;
+        return ((double) puntosActuales / puntosObjetivo) * 100;
     }
 
     // Método auxiliar
@@ -58,6 +77,7 @@ public class Meta {
                 "id='" + id + '\'' +
                 ", descripcion='" + descripcion + '\'' +
                 ", puntosObjetivo=" + puntosObjetivo +
+                ", puntosActuales=" + puntosActuales +
                 ", completada=" + completada +
                 '}';
     }

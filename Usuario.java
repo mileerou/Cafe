@@ -104,6 +104,10 @@ public class Usuario {
         this.preferencias = preferencias;
     }
 
+    public void setMetas(ArrayList<Meta> metas) {
+        this.metas = metas;
+    }
+
     public void agregarConsumo(Consumo consumo) {
         this.consumos.add(consumo);
     }

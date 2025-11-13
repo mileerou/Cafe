@@ -162,7 +162,8 @@ public class Main {
             System.out.println("12. Completar una meta");
             System.out.println("13. Ver historial de canjes");
             System.out.println("14. Ver progreso de una meta");
-            System.out.println("15. Cerrar sesión");
+            System.out.println("15. Top Movacciners (Tabla de líderes)");
+            System.out.println("16. Cerrar sesión");
             System.out.print("Elige una opción: ");
             String input = sc.nextLine();
             try {
@@ -628,6 +629,8 @@ public class Main {
                 case 12:
                     System.out.println("\n===== COMPLETAR META =====");
                     
+                    metaController.obtenerMetas(usuarioActual.getId());
+                    usuarioActual = usuarioController.buscarUsuarioPorId(usuarioActual.getId());
                     ArrayList<Meta> metasUsuario = usuarioActual.getMetas();
                     ArrayList<Meta> metasPendientes = new ArrayList<>();
                     
@@ -725,6 +728,25 @@ public class Main {
                     break;
 
                 case 15:
+                    System.out.println("\n===== TOP MOVACCINERS =====\n");
+                    ArrayList<Usuario> top = usuarioController.obtenerTopMovacciners(5);
+                    if (top == null || top.isEmpty()) {
+                        System.out.println("Aún no hay movacciners registrados. Sé el primero en ganar puntos!\n");
+                    } else {
+                        int rank = 1;
+                        for (Usuario u : top) {
+                            String rank_symbol = (rank == 1) ? ">:D" : (rank == 2) ? ":D" : (rank == 3) ? ":v" : ":c";
+                            System.out.printf("%s  #%d  %-20s  Puntos: %-8d  (Total ganado: %d)\n",
+                                rank_symbol, rank, u.getNombre(), u.getPuntos(), u.getPuntosTotalesGanados());
+                            rank++;
+                        }
+                        System.out.println();
+                        System.out.println("Consejo: registra consumos consistentes para ganar más puntos y subir en la tabla!");
+                        System.out.println("Desafío: Intenta superar al #1 esta semana obteniendo 200 puntos más.\n");
+                    }
+                    break;
+
+                case 16:
                     System.out.println("Cerrando sesión...\n");
                      MensajeMotivacional mensajeDespedida = mensajeController.generarMensaje(
                         "¡Hasta pronto, " + usuarioActual.getNombre() + "! Recuerda: cada día es una oportunidad para mejorar",
@@ -739,7 +761,7 @@ public class Main {
                 default:
                     System.out.println("Opción inválida. Intente de nuevo.\n");
             }
-        } while (opcion != 15);
+        } while (opcion != 16);
     }
 
     

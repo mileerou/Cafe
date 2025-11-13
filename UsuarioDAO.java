@@ -43,6 +43,30 @@ public class UsuarioDAO {
         }
     }
 
+    public Usuario topMovacciners() {
+        try {
+            Document doc = collection.find().sort(new Document("puntosTotalesGanados", -1)).first();
+            if (doc == null) return null;
+            return documentoAUsuario(doc);
+        } catch (Exception e) {
+            throw new RuntimeException("Error al buscar top Movacciners: " + e.getMessage());
+        }
+    }
+
+    // New: retorna los top N usuarios ordenados por puntos totales ganados (desc)
+    public ArrayList<Usuario> topMovacciners(int limit) {
+        ArrayList<Usuario> top = new ArrayList<>();
+        try {
+            for (Document doc : collection.find().sort(new Document("puntosTotalesGanados", -1)).limit(limit)) {
+                Usuario u = documentoAUsuario(doc);
+                top.add(u);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Error al obtener top Movacciners: " + e.getMessage());
+        }
+        return top;
+    }
+
     public Usuario buscarUsuarioPorCorreo(String correo) {
         try {
             Document doc = collection.find(Filters.eq("correo", correo)).first();

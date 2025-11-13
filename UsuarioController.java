@@ -166,4 +166,9 @@ public class UsuarioController {
         }
         System.out.println(" No se encontró ninguna meta con el ID proporcionado.");
     }
+
+    // New: obtener top N movacciners (líderes) desde el DAO
+    public ArrayList<Usuario> obtenerTopMovacciners(int n) {
+        return usuarioDAO.topMovacciners(n);
+    }
 }

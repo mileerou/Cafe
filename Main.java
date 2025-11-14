@@ -31,7 +31,7 @@ public class Main {
         System.out.println("           ( (");
         System.out.println("            ) )");
         System.out.println("           ........");
-        System.out.println("           |      |]");
+        System.out.println("           |      | ]");
         System.out.println("           \\      /");
         System.out.println("            `----'");
         System.out.println("==============================================\n");
@@ -124,7 +124,7 @@ public class Main {
                     break;
                     
                 case 3:
-                    System.out.println("Gracias por usar Movaccino. ¡Hasta luego!");
+                    System.out.println("Gracias por usar Movaccino. ¡Hasta luego! :D");
                     MongoDBConnection.closeConnection();
                     break;
                     
@@ -142,11 +142,11 @@ public class Main {
         preferenciasController.setUsuarioActual(usuarioActual.getId());
         
         do {
-            System.out.println("   ^    ^  ");
-            System.out.println("  ( ; . ; ) つ  ");
-            System.out.println("  (     ⎠");
-            System.out.println("  (      )  ");
-            System.out.println(" (   ) (   )  ");
+            System.out.println("    ^   ^  ");
+            System.out.println("   (; . ;)   ");
+            System.out.println("  (,,, ,,,)  ");
+            System.out.println("  (       )  ___| ");
+            System.out.println(" (   ) (   )_| ");
             System.out.println("  ^^    ^^   ");
             System.out.println("1. Registrar consumo diario de café");
             System.out.println("2. Reportes de consumo (con filtros)");
@@ -218,7 +218,7 @@ public class Main {
                             System.out.print("¿Algún comentario extra? ");
                             respuestasExtras = sc.nextLine();
 
-                            System.out.println("\n☕ Se ha registrado tu consumo especial.");
+                            System.out.println("\nSe ha registrado tu consumo especial.");
                         } else {
                             System.out.println("Opción inválida.");
                             break;
@@ -232,7 +232,7 @@ public class Main {
                         ConsumoController consumoController = new ConsumoController(usuarioActual);
                         consumoController.guardarConsumoDiario(fecha, tamanoTaza, tipoAzucar, tipoLeche, tipoCafe, respuestasExtras);
 
-                        System.out.println("¡Consumo registrado exitosamente!\n");
+                        System.out.println("¡Consumo registrado exitosamente! (∪.∪)\n");
 
                         mensajeController.mostrarMensaje(
                             mensajeController.obtenerMensajeRegistroConsumo()
@@ -316,7 +316,7 @@ public class Main {
                             SimpleDateFormat formatoFecha = new SimpleDateFormat("dd/MM/yyyy HH:mm");
                             for (Consumo consumo : consumosFiltrados) {
                                 System.out.println("╔══════════════════════════════════╗");
-                                System.out.println("║   ☕  Registro de Consumo        ║");
+                                System.out.println(" ║  (●'◡'●)  Registro de Consumo  ║");
                                 System.out.println("╠══════════════════════════════════╣");
                                 System.out.printf("║ Fecha: %-24s ║\n", formatoFecha.format(consumo.getFecha()));
                                 System.out.printf("║ Tamaño de taza: %-16s ║\n", consumo.getTamañoTaza());
@@ -697,11 +697,11 @@ public class Main {
                         System.out.println("No has canjeado ningún premio aún.\n");
                     } else {
                         for (Canje c : historialCanjes) {
-                            System.out.println("╔══════════════════════════════════╗");
-                            System.out.printf("║ Fecha del canje: %-16s ║\n", c.getFechaCanje());
-                            System.out.printf("║ Premio: %-23s ║\n", c.getPremioNombre());
-                            System.out.printf("║ Puntos usados: %-17d ║\n", c.getPuntosUsados());
-                            System.out.println("╚══════════════════════════════════╝\n");
+                            System.out.println(    "╔══════════════════════════════════╗");
+                            System.out.printf("║      Fecha del canje: %-16s      ║\n", c.getFechaCanje());
+                            System.out.printf("║          Premio: %-23s           ║\n", c.getPremioNombre());
+                            System.out.printf("║       Puntos usados: %-17d       ║\n", c.getPuntosUsados());
+                            System.out.println(    "╚══════════════════════════════════╝\n");
                         }
                     }
                     break;

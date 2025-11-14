@@ -196,11 +196,11 @@ public class Usuario {
             return;
         }
         
-        System.out.println("\n╔════════════════════════════════════════════════════════════╗");
-        System.out.println("║                 HISTORIAL DE PUNTOS GANADOS                ║");
-        System.out.println("╠════════════════════════════════════════════════════════════╣");
-        System.out.printf("║  Puntos totales ganados: %-33d ║\n", puntosTotalesGanados);
-        System.out.println("╠════════════════════════════════════════════════════════════╣");
+        System.out.println(  "\n╔════════════════════════════════════════════════════════════╗");
+        System.out.println(    "║                 HISTORIAL DE PUNTOS GANADOS                ║");
+        System.out.println(    "╠════════════════════════════════════════════════════════════╣");
+        System.out.printf("║              Puntos totales ganados: %-33d                 ║\n", puntosTotalesGanados);
+        System.out.println(    "╠════════════════════════════════════════════════════════════╣");
         
         java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("dd/MM/yyyy HH:mm");
         

@@ -126,6 +126,10 @@ public class MetaController {
             usuario.registrarPuntosGanados(puntosGanados, "meta", "Meta completada: " + metaEncontrada.getDescripcion());
             usuarioController.sumarPuntosConHistorial(usuario, puntosGanados);
 
+            // Eliminar meta de las metas pendientes (igual que en completarMeta)
+            usuario.getMetas().remove(metaEncontrada);
+            metaDAO.deleteMeta(usuarioId, metaId);
+
             System.out.println("¡Felicidades! Has completado la meta al alcanzar los puntos objetivo.");
             MensajeMotivacional mensajeMeta = mensajeController.generarMensaje(
                 "¡Meta completada! " + metaEncontrada.getDescripcion() + ". ¡Sigue así!",

@@ -42,7 +42,7 @@ public class PremioController {
             return;
         }
 
-        System.out.println("🎉 Mensajes sobre premios:");
+        System.out.println("Mensajes sobre premios:");
         for (Premio premio : premios) {
             String mensaje = "Premio: " + premio.getNombre() +
                              " | Puntos requeridos: " + premio.getPuntosRequeridos() +
@@ -52,36 +52,58 @@ public class PremioController {
     }
 
     public String canjearPremio(Usuario usuario, String premioId) {
-        Premio premio = premioDAO.buscarPremioPorId(premioId);
+    Premio premio = premioDAO.buscarPremioPorId(premioId);
 
-        if (premio == null) {
-            return "Premio no encontrado.";
-        }
+    if (premio == null) {
+        return "Premio no encontrado.";
+    }
 
-        if (!premio.isDisponible()) {
-            return "El premio está agotado.";
-        }
+    if (!premio.isDisponible()) {
+        return "El premio está agotado.";
+    }
 
-        if (usuario.getPuntos() < premio.getPuntosRequeridos()) {
-            return "No tienes suficientes puntos para canjear este premio.";
-        }
+    if (usuario.getPuntos() < premio.getPuntosRequeridos()) {
+        return "No tienes suficientes puntos para canjear este premio.";
+    }
 
-        // Realizar el canje
-        int nuevosPuntos = usuario.getPuntos() - premio.getPuntosRequeridos();
-        usuario.setPuntos(nuevosPuntos);
-        
-        // Actualizar puntos del usuario en la base de datos
-        UsuarioDAO usuarioDAO = new UsuarioDAO();
-        usuarioDAO.actualizarPuntos(usuario.getId(), nuevosPuntos);
-        
-        // Actualizar stock del premio
-        int nuevoStock = premio.getStock() - 1;
-        premio.setStock(nuevoStock);
-        premioDAO.actualizarStock(premio.getId(), nuevoStock);
+    // Realizar el canje
+    int nuevosPuntos = usuario.getPuntos() - premio.getPuntosRequeridos();
+    usuario.setPuntos(nuevosPuntos);
+    
+    // Actualizar puntos del usuario en la base de datos
+    UsuarioDAO usuarioDAO = new UsuarioDAO();
+    usuarioDAO.actualizarPuntos(usuario.getId(), nuevosPuntos);
+    
+    // Actualizar stock del premio
+    int nuevoStock = premio.getStock() - 1;
+    premio.setStock(nuevoStock);
+    premioDAO.actualizarStock(premio.getId(), nuevoStock);
 
-        // Registrar el canje en el historial
-        registrarCanje(usuario.getId(), premio, premio.getPuntosRequeridos());
+    // Registrar el canje en el historial (SIN MODIFICAR - mantiene compatibilidad)
+    registrarCanje(usuario.getId(), premio, premio.getPuntosRequeridos());
 
-        return "Has canjeado el premio: " + premio.getNombre() + ". ¡Disfrútalo!";
+    EmailService emailService = new EmailService();
+    boolean emailEnviado = emailService.enviarNotificacionPremio(
+        usuario.getCorreo(),
+        usuario.getNombre(),
+        premio.getNombre(),
+        premio.getDescripcion()
+    );
+
+    String mensaje = "Has canjeado el premio: " + premio.getNombre();
+    /*
+    if (premio.getNombre().toLowerCase().contains("cupón") || 
+        premio.getNombre().toLowerCase().contains("cupon")) {
+        String codigo = EmailService.generarCodigoCupon();
+        mensaje += "\nCódigo de cupón: " + codigo;
+    }*/
+    
+    if (emailEnviado) {
+        mensaje += "\n Confirmación enviada a: " + usuario.getCorreo();
+    } else {
+        mensaje += "\n No se pudo enviar el email de confirmación";
+    }
+
+    return mensaje;
     }
 }

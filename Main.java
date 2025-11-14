@@ -382,6 +382,7 @@ public class Main {
                     break;
 
                 case 4:
+                    usuarioActual = usuarioController.buscarUsuarioPorId(usuarioActual.getId());
                     System.out.println("\n===== TUS PREFERENCIAS =====");
                     PreferenciasUsuario pref = preferenciasController.obtenerPreferencias();
                     if (pref != null) {
@@ -403,16 +404,19 @@ public class Main {
 
                 case 5:
                     System.out.println("\n===== TUS PUNTOS ACTUALES =====");
+                    usuarioActual = usuarioController.buscarUsuarioPorId(usuarioActual.getId());
                     System.out.println("Puntos disponibles: " + usuarioActual.getPuntos() + " puntos");
                     System.out.println("Puntos totales ganados: " + usuarioActual.getPuntosTotalesGanados() + " puntos");
                     System.out.println("Puntos canjeados: " + (usuarioActual.getPuntosTotalesGanados() - usuarioActual.getPuntos()) + " puntos\n");
                     break;
 
                 case 6:
+                    usuarioActual = usuarioController.buscarUsuarioPorId(usuarioActual.getId());
                     usuarioActual.mostrarHistorialPuntos();
                     break;
 
                 case 7:
+                    usuarioActual = usuarioController.buscarUsuarioPorId(usuarioActual.getId());
                     ConsumoController consumoControllerMod = new ConsumoController(usuarioActual);
                     ArrayList<Consumo> historial = consumoControllerMod.obtenerHistorialConsumo();
                     
@@ -498,6 +502,8 @@ public class Main {
                     break;
 
                 case 8:
+                    metaController.obtenerMetas(usuarioActual.getId());
+                    usuarioActual = usuarioController.buscarUsuarioPorId(usuarioActual.getId());
                     System.out.println("\n===== ACTUALIZAR USUARIO =====");
                     System.out.print("Nuevo nombre (dejar en blanco para no cambiar): ");
                     String nuevoNombre = sc.nextLine();
@@ -551,6 +557,8 @@ public class Main {
 
                 case 10:
                     System.out.println("\n===== ASIGNAR METAS =====");
+                    metaController.obtenerMetas(usuarioActual.getId());
+                    usuarioActual = usuarioController.buscarUsuarioPorId(usuarioActual.getId());
                     try {
                         System.out.println("Elige una opción:");
                         System.out.println("1. Seleccionar metas predefinidas");
@@ -623,6 +631,7 @@ public class Main {
                     break;
                     
                 case 11:
+                    usuarioActual = usuarioController.buscarUsuarioPorId(usuarioActual.getId());
                     metaController.obtenerMetas(usuarioActual.getId());
                     break;
                     
@@ -692,6 +701,8 @@ public class Main {
 
                 case 13:
                     System.out.println("\n===== HISTORIAL DE CANJES =====");
+                    metaController.obtenerMetas(usuarioActual.getId());
+                    usuarioActual = usuarioController.buscarUsuarioPorId(usuarioActual.getId());
                     ArrayList<Canje> historialCanjes = premioController.obtenerHistorialCanjes(usuarioActual.getId());
                     if (historialCanjes.isEmpty()) {
                         System.out.println("No has canjeado ningún premio aún.\n");
@@ -708,7 +719,8 @@ public class Main {
                 
                 case 14:
                     System.out.println("\n===== PROGRESO DE UNA META =====");
-                    
+                    metaController.obtenerMetas(usuarioActual.getId());
+                    usuarioActual = usuarioController.buscarUsuarioPorId(usuarioActual.getId());
                     ArrayList<Meta> metasUsuario2 = usuarioActual.getMetas();
                     if (metasUsuario2 == null || metasUsuario2.isEmpty()) {
                         System.out.println("No tienes metas registradas aún.\n");

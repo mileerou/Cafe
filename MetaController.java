@@ -85,12 +85,12 @@ public class MetaController {
             );
             mensajeController.mostrarMensaje(primeraMeta);
         } else if (metasCompletadas % 5 == 0) {
-            MensajeMotivacional logroEspecial = mensajeController.generarMensaje(
+            /*MensajeMotivacional logroEspecial = mensajeController.generarMensaje(
                 "¡LOGRO ESPECIAL! Has completado " + metasCompletadas + " metas. ¡Eres imparable!",
                 "logro_metas",
                 "metas_completadas % 5 == 0"
             );
-            mensajeController.mostrarMensaje(logroEspecial);
+            mensajeController.mostrarMensaje(logroEspecial);*/
         }
     }
 

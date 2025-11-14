@@ -250,10 +250,11 @@ public class Main {
                 case 2:
                     System.out.println("\n===== REPORTES DE CONSUMO =====");
                     System.out.println("1. Ver todo el historial");
+                    /*
                     System.out.println("2. Filtrar por fecha específica");
-                    System.out.println("3. Filtrar por rango de fechas");
-                    System.out.println("4. Filtrar por tipo de café");
-                    System.out.println("5. Filtrar por tamaño de taza");
+                    System.out.println("3. Filtrar por rango de fechas");*/
+                    System.out.println("2. Filtrar por tipo de café");
+                    System.out.println("3. Filtrar por tamaño de taza");
                     System.out.print("Elige una opción: ");
                     
                     try {
@@ -266,7 +267,7 @@ public class Main {
                                 consumosFiltrados = consumoController.obtenerHistorialConsumo();
                                 break;
                                 
-                            case 2:
+                            case 200:
                                 System.out.print("Ingresa la fecha (dd/MM/yyyy): ");
                                 String fechaStr = sc.nextLine();
                                 try {
@@ -279,7 +280,7 @@ public class Main {
                                 }
                                 break;
                                 
-                            case 3:
+                            case 300:
                                 System.out.print("Fecha inicio (dd/MM/yyyy): ");
                                 String inicioStr = sc.nextLine();
                                 System.out.print("Fecha fin (dd/MM/yyyy): ");
@@ -295,13 +296,13 @@ public class Main {
                                 }
                                 break;
                                 
-                            case 4:
+                            case 2:
                                 System.out.print("Ingresa el tipo de café: ");
                                 String tipoCafe = sc.nextLine();
                                 consumosFiltrados = consumoController.obtenerPorTipoCafe(tipoCafe);
                                 break;
                                 
-                            case 5:
+                            case 3:
                                 System.out.print("Ingresa el tamaño de taza: ");
                                 String tamanoTaza = sc.nextLine();
                                 consumosFiltrados = consumoController.obtenerPorTamanoTaza(tamanoTaza);
@@ -505,7 +506,6 @@ public class Main {
                     break;
 
                 case 8:
-                    metaController.obtenerMetas(usuarioActual.getId());
                     usuarioActual = refreshUsuario.apply(usuarioActual);
                     System.out.println("\n===== ACTUALIZAR USUARIO =====");
                     System.out.print("Nuevo nombre (dejar en blanco para no cambiar): ");
@@ -706,7 +706,6 @@ public class Main {
 
                 case 13:
                     System.out.println("\n===== HISTORIAL DE CANJES =====");
-                    metaController.obtenerMetas(usuarioActual.getId());
                     usuarioActual = refreshUsuario.apply(usuarioActual);
                     ArrayList<Canje> historialCanjes = premioController.obtenerHistorialCanjes(usuarioActual.getId());
                     if (historialCanjes.isEmpty()) {
@@ -724,7 +723,6 @@ public class Main {
                 
                 case 14:
                     System.out.println("\n===== PROGRESO DE UNA META =====");
-                    metaController.obtenerMetas(usuarioActual.getId());
                     usuarioActual = refreshUsuario.apply(usuarioActual);
                     ArrayList<Meta> metasUsuario2 = usuarioActual.getMetas();
                     if (metasUsuario2 == null || metasUsuario2.isEmpty()) {
